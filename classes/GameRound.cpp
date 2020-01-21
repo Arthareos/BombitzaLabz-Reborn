@@ -2,7 +2,45 @@
 
 constexpr auto TIMER = 300;
 
-void getLetterboxView(sf::View& view, sf::RenderWindow& window) {
+const bool PositionValidator(Map& map, int width, int height)
+{
+	if (map.GetMapTiles().at(height).at(width).GetType() != 0)
+	{
+		return false;
+	}
+	if ((height == 1 && width == 1) || (height == 2 && width == 1) || (height == 1 && width == 2) ||
+		(height == map.GetSize().y - 2 && width == map.GetSize().x - 2) || (height == map.GetSize().y - 3 && width == map.GetSize().x - 2) || (height == map.GetSize().y - 2 && width == map.GetSize().x - 3) ||
+		(height == map.GetSize().y - 2 && width == 1) || (height == map.GetSize().y - 2 && width == 2) || (height == map.GetSize().y - 3 && width == 1) ||
+		(height == 1 && width == map.GetSize().x - 2) || (height == 2 && map.GetSize().x - 2) || (height == 1 && width == map.GetSize().x - 3))
+	{
+		return false;
+	}
+	return true;
+}
+
+void RandomPosition(std::vector<AIEnemy>& enemies, Map& map)
+{
+	srand(NULL);
+
+	int index = enemies.size() - 1;
+	int auxHeight, auxWidth;
+	while (index)
+	{
+		auxHeight = rand() % (int)map.GetSize().x;
+		auxWidth = rand() % (int)map.GetSize().y;
+
+		auxHeight = std::clamp(auxHeight, 1, (int)map.GetSize().x - 1);
+		auxWidth = std::clamp(auxWidth, 1, (int)map.GetSize().y - 1);
+
+		if (PositionValidator(map, auxWidth, auxHeight))
+		{
+			enemies.at(index).SetPosition(sf::Vector2f(auxHeight, auxWidth), map);
+			index--;
+		}
+	}
+}
+
+void GetLetterboxView(sf::View& view, sf::RenderWindow& window) {
 
 	float windowRatio = (float)window.getSize().x / (float)window.getSize().y;
 	float viewRatio = view.getSize().x / (float)view.getSize().y;
@@ -19,7 +57,7 @@ void getLetterboxView(sf::View& view, sf::RenderWindow& window) {
 	view.setViewport(sf::FloatRect(posX, posY, sizeX, sizeY));
 }
 
-bool isPlayable(Player& player, Scoreboard& scoreboard)
+bool IsPlayable(Player& player, Scoreboard& scoreboard)
 {
 	bool ok = true;
 
@@ -54,16 +92,12 @@ GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t&
 
 	player.SetPosition(m_map, 0);
 
-	m_enemies.reserve(10);
 	for (int index = 0; index < 10; index++)
 	{
 		AIEnemy enemy(sf::Vector2u(4, 20));
 		m_enemies.push_back(enemy);
 	}
-	for (int index = 0; index < m_enemies.size(); index++)
-	{
-		m_enemies.at(index).SetPosition(m_enemies.at(index).RandomPosition(m_map), m_map);
-	}
+	RandomPosition(m_enemies, m_map);
 	
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -85,10 +119,10 @@ GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t&
 	sf::View playerView(viewport);
 	playerView.setSize(960, 896);
 	playerView.setCenter(playerView.getSize().x / 2, playerView.getSize().y / 2);
-	getLetterboxView(playerView, window);
+	GetLetterboxView(playerView, window);
 	window.setView(playerView);
 
-	while (gameState % 10 == 2 && isPlayable(player, m_scoreboard))
+	while (gameState % 10 == 2 && IsPlayable(player, m_scoreboard))
 	{
 		float deltaTime = clock.restart().asSeconds();
 
@@ -170,7 +204,7 @@ GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t&
 		window.clear();
 	}
 
-	if (isPlayable(player, m_scoreboard) == false)
+	if (IsPlayable(player, m_scoreboard) == false)
 	{
 		player.SetLives(player.GetLives() - 1);
 	}

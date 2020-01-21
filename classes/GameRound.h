@@ -7,6 +7,7 @@
 #include <SFML/Window.hpp>
 
 #include <vector>
+#include <algorithm>
 
 #include "Resources.h"
 #include "Map.h"

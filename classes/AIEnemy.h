@@ -44,7 +44,6 @@ public:
 	const sf::Vector2f& getSize();
 	const bool& IsDead();
 
-	const sf::Vector2f& RandomPosition(Map& map);
 	void Movement(float& deltaTime, Map& map);
 	void Draw(sf::RenderWindow& window);
 	void Functionality(float& deltaTime, Map& map, sf::RenderWindow& window);

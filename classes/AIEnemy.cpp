@@ -118,8 +118,6 @@ void AIEnemy::Movement(float& deltaTime, Map& map)
 						&& enemyBounds.left + enemyBounds.width > obstacleBounds.left)
 					{
 						movement.y = 0.f;
-						//m_enemySprite.setPosition(enemyBounds.left, obstacleBounds.top - enemyBounds.height);
-						//nextPosition.left = enemyBounds.left;
 					}
 					else
 						//Top collision
@@ -129,8 +127,6 @@ void AIEnemy::Movement(float& deltaTime, Map& map)
 							&& enemyBounds.left + enemyBounds.width > obstacleBounds.left)
 						{
 							movement.y = 0.f;
-							//m_enemySprite.setPosition(enemyBounds.left, obstacleBounds.top + obstacleBounds.height);
-							//nextPosition.left = enemyBounds.left;
 						}
 						else
 							//Right collision
@@ -140,8 +136,6 @@ void AIEnemy::Movement(float& deltaTime, Map& map)
 								&& enemyBounds.top + enemyBounds.height > obstacleBounds.top)
 							{
 								movement.x = 0.f;
-								//m_enemySprite.setPosition(obstacleBounds.left - enemyBounds.width, enemyBounds.top);
-								//nextPosition.left = enemyBounds.left;
 							}
 							else
 								//Left collision
@@ -151,8 +145,6 @@ void AIEnemy::Movement(float& deltaTime, Map& map)
 									&& enemyBounds.top + enemyBounds.height > obstacleBounds.top)
 								{
 									movement.x = 0.f;
-									//m_enemySprite.setPosition(obstacleBounds.left + obstacleBounds.width, enemyBounds.top);
-									//nextPosition.left = enemyBounds.left
 								}
 				}
 			}
@@ -187,35 +179,4 @@ const sf::Vector2f& AIEnemy::GetCenterPosition()
 const float& AIEnemy::GetDistance(float x, float y)
 {
 	return sqrt(pow((x - GetCenterPosition().x), 2) + pow((y - GetCenterPosition().y), 2));
-}
-
-const bool PositionValidator(Map& map, int width, int height)
-{
-	if (map.GetMapTiles().at(width).at(height).GetType() != 0)
-	{
-		return false;
-	}
-	if ((height == 1 && width == 1) || (height == 2 && width == 1) || (height == 1 && width == 2) ||
-		(height == map.GetSize().y - 2 && width == map.GetSize().x - 2) || (height == map.GetSize().y - 3 && width == map.GetSize().x - 2) || (height == map.GetSize().y - 2 && width == map.GetSize().x - 3) ||
-		(height == map.GetSize().y - 2 && width == 1) || (height == map.GetSize().y - 2 && width == 2) || (height == map.GetSize().y - 3 && width == 1) ||
-		(height == 1 && width == map.GetSize().x - 2) || (height == 2 && map.GetSize().x - 2) || (height == 1 && width == map.GetSize().x - 3))
-	{
-		return false;
-	}
-	return true;
-}
-
-const sf::Vector2f& AIEnemy::RandomPosition(Map& map)
-{
-	srand(time(NULL));
-	int auxHeight = generateRandom((int)map.GetSize().x - 1);
-	int auxWidth = generateRandom((int)map.GetSize().y - 1);
-
-	while (PositionValidator(map, auxWidth, auxHeight) == false)
-	{
-		auxHeight = generateRandom((int)map.GetSize().y - 1);
-		auxWidth = generateRandom((int)map.GetSize().x - 1);
-	}
-
-	return sf::Vector2f(auxHeight, auxWidth);
 }
