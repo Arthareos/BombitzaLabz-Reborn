@@ -7,7 +7,7 @@
 #include "Map.h"
 #include "Controller.h"
 
-class Player : PlayerAnimation {
+class Player : public PlayerAnimation {
 protected:
 	sf::Texture m_texture;
 	sf::Vector2f m_size;
@@ -28,11 +28,11 @@ protected:
 	uint16_t m_lives;
 	uint64_t m_score;
 	uint64_t m_highscore;
-	bool isDead;
+	bool m_isDead;
 
 public:	
 	Player();
-	Player(sf::Vector2u m_imageCount, uint16_t highscore);
+	Player(sf::Vector2u imageCount, uint16_t highscore);
 	~Player();
 
 	void SetPosition(Map& map, uint16_t position);
@@ -46,7 +46,7 @@ public:
 	const sf::RectangleShape& GetSprite();
 	const sf::Vector2f& GetCenterPosition();
 	const sf::Vector2u& GetPositionOnMap(Map& map);
-	const float& GetDistance(float x1, float y1, float x2, float y2);
+	const float& GetDistance(float x, float y);
 	const sf::Vector2f& getSize();
 	const uint16_t& GetStage();
 	const uint16_t& GetRound();
@@ -61,7 +61,7 @@ public:
 	bool MoveRight(float& deltaTime, Control& control, sf::Vector2f& movement);
 	bool MoveLeft(float& deltaTime, Control& control, sf::Vector2f& movement);
 
-	void DrawPlayer(sf::RenderWindow& window);
+	void Draw(sf::RenderWindow& window);
 	void Functionality(float& deltaTime, Map& map, sf::RenderWindow& window, Control& control);
 };
 

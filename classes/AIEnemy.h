@@ -1,4 +1,5 @@
 #pragma once
+
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <string>
@@ -8,44 +9,37 @@
 #include "EnemyAnimation.h"
 
 class AIEnemy : public EnemyAnimation {
-public:
-
-	sf::Texture enemy_texture;
-	float speed;
-	unsigned int row;
-	int ok = 0;
-	sf::Vector2f size;
-	sf::Vector2f center;
-	sf::Vector2u position;
-	sf::Vector2u position2;
-
+protected:
+	sf::Texture m_texture;
+	sf::Vector2f m_size;
+	sf::Vector2f m_center;
+	sf::Vector2u m_position;
 	sf::RectangleShape m_sprite;
-	float auxDeltaTime = 0.0f;
-	EnemyAnimation animation1;
+	sf::RectangleShape m_collisionDetector;
+	sf::FloatRect m_nextPosition;
 
-	std::vector<std::string> Directions{ "","UP","DOWN","LEFT","RIGHT" };
+	EnemyAnimation m_animation;
 
-	std::string direction = "RIGHT";
-	bool isAlive;
+	float m_animationSwitchTime;
+	float m_speed;
+	bool m_isDead;
 
-
-
+public:
 	AIEnemy();
-	AIEnemy(std::string imageDirectory, sf::Vector2u m_imageCount, float switchTime, float speed);
-	void Update(Map& map, float deltaTime, sf::RenderWindow& window);
+	AIEnemy(sf::Vector2u imageCount);
+	~AIEnemy();
 
-	void setPosition(Map& map);
-	sf::Vector2u getPositionOnMap(Map& map);
-	std::vector<std::vector<MapTile>>& getMapTiles();
-	void movement(float deltaTime, Map& map);
-	void drawEnemy(sf::RenderWindow& window);
-	bool isGoingToCollide(Map& map);
-	bool isOnEdge(Map& map);
-	void decisions(Map& map);
-	float distance(float x1, float y1, float x2, float y2);
+	void SetPosition(Map& map);
+	void SetDead(bool value);
 
-	sf::Vector2f getCenterPosition();
+	const sf::RectangleShape& GetSprite();
+	const sf::Vector2f& GetCenterPosition();
+	const sf::Vector2u& GetPositionOnMap(Map& map);
+	const float& GetDistance(float x, float y);
+	const sf::Vector2f& getSize();
+	const bool& IsDead();
 
-	
+	void Draw(sf::RenderWindow& window);
+	void Functionality(float& deltaTime, Map& map, sf::RenderWindow& window);
 };
 

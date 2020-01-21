@@ -35,8 +35,7 @@ bool isPlayable(Player& player, Scoreboard& scoreboard)
 	return ok;
 }
 
-GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t& gameState,
-	Player& player)
+GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t& gameState, Player& player)
 {
 	player.SetDead(false);
 

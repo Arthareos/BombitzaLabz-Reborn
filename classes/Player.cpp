@@ -3,7 +3,7 @@
 Player::Player() {}
 
 //0 for top-left, 1 for bottom-right, 2 for top-right, 3 for bottom-left
-Player::Player(sf::Vector2u m_imageCount, uint16_t highscore)
+Player::Player(sf::Vector2u imageCount, uint16_t highscore)
 {
 	if (!m_texture.loadFromFile(".\\resources\\bomberman.png"))
 	{
@@ -16,7 +16,7 @@ Player::Player(sf::Vector2u m_imageCount, uint16_t highscore)
 	}
 
 	m_animationSwitchTime = 0.1f;
-	PlayerAnimation animation(&m_texture, m_imageCount, m_animationSwitchTime);
+	PlayerAnimation animation(&m_texture, imageCount, m_animationSwitchTime);
 	m_animation = animation;
 	m_size = sf::Vector2f(60, 60);
 	m_sprite.setSize(m_size);
@@ -31,7 +31,7 @@ Player::Player(sf::Vector2u m_imageCount, uint16_t highscore)
 	m_lives = 2;
 	m_score = 0;
 	m_highscore = highscore;
-	isDead = false;
+	m_isDead = false;
 }
 
 Player::~Player() {}
@@ -94,7 +94,7 @@ void Player::SetHighscore()
 
 void Player::SetDead(bool value)
 {
-	this->isDead = value;
+	this->m_isDead = value;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -119,9 +119,9 @@ const sf::Vector2u& Player::GetPositionOnMap(Map& map)
 	{
 		for (int indexY = 0; indexY < map.GetSize().y; indexY++)
 		{
-			if (GetDistance(GetCenterPosition().x, GetCenterPosition().y, map.GetMapTiles()[indexX][indexY].GetSprite().getPosition().x + m_sprite.getSize().x / 2, map.GetMapTiles()[indexX][indexY].GetSprite().getPosition().y + m_sprite.getSize().y / 2) < min)
+			if (GetDistance(map.GetMapTiles()[indexX][indexY].GetSprite().getPosition().x + m_sprite.getSize().x / 2, map.GetMapTiles()[indexX][indexY].GetSprite().getPosition().y + m_sprite.getSize().y / 2) < min)
 			{
-				min = GetDistance(GetCenterPosition().x, GetCenterPosition().y, map.GetMapTiles()[indexX][indexY].GetSprite().getPosition().x + m_sprite.getSize().x / 2, map.GetMapTiles()[indexX][indexY].GetSprite().getPosition().y + m_sprite.getSize().y / 2);
+				min = GetDistance(map.GetMapTiles()[indexX][indexY].GetSprite().getPosition().x + m_sprite.getSize().x / 2, map.GetMapTiles()[indexX][indexY].GetSprite().getPosition().y + m_sprite.getSize().y / 2);
 				m_position.x = indexX;
 				m_position.y = indexY;
 			}
@@ -131,9 +131,9 @@ const sf::Vector2u& Player::GetPositionOnMap(Map& map)
 	return m_position;
 }
 
-const float& Player::GetDistance(float x1, float y1, float x2, float y2)
+const float& Player::GetDistance(float x, float y)
 {
-	return sqrt(pow((x2 - x1), 2) + pow((y2 - y1), 2));
+	return sqrt(pow(x - GetCenterPosition().x, 2) + pow((y - GetCenterPosition().y), 2));
 }
 
 const sf::Vector2f& Player::getSize()
@@ -168,7 +168,7 @@ const uint64_t& Player::GetHighscore()
 
 const bool& Player::IsDead()
 {
-	return isDead;
+	return m_isDead;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -310,7 +310,7 @@ bool Player::MoveLeft(float& deltaTime, Control& control, sf::Vector2f& movement
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-void Player::DrawPlayer(sf::RenderWindow& window)
+void Player::Draw(sf::RenderWindow& window)
 {
 	window.draw(m_collisionDetector);
 	window.draw(m_sprite);
@@ -319,5 +319,5 @@ void Player::DrawPlayer(sf::RenderWindow& window)
 void Player::Functionality(float& deltaTime, Map& map, sf::RenderWindow& window, Control& control)
 {
 	Movement(deltaTime, control, map);
-	DrawPlayer(window);
+	Draw(window);
 }

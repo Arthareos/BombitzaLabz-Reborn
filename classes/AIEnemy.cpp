@@ -1,223 +1,101 @@
 #include "AIEnemy.h"
-#include <time.h>
-#include <string>
 
-AIEnemy::AIEnemy(std::string imageDirectory, sf::Vector2u m_imageCount, float switchTime, float speed)
+AIEnemy::AIEnemy() {}
+
+AIEnemy::AIEnemy(sf::Vector2u imageCount)
 {
-	if (!enemy_texture.loadFromFile(imageDirectory))
+	if (!m_texture.loadFromFile(".\\resources\\enemy.png"))
 	{
 		std::cout << " +> [ERROR] Enemy texture NOT loaded;" << std::endl;
 	}
 	else
 	{
 		std::cout << " +> [INFO] Enemy texture loaded;" << std::endl;
-
-		m_sprite.setTexture(&enemy_texture);
+		m_sprite.setTexture(&m_texture);
 	}
 
-	EnemyAnimation animation(&enemy_texture, m_imageCount, switchTime);
-	animation1 = animation;
-	this->speed = speed;
-	row = 0;
+	EnemyAnimation animation(&m_texture, m_imageCount, switchTime);
+	m_animation = animation;
+	m_size = sf::Vector2f(60, 60);
+	m_sprite.setSize(m_size);
+	m_collisionDetector.setSize(sf::Vector2f(40, 40));
+	m_collisionDetector.setFillColor(sf::Color::Transparent);
 
-	isAlive = true;
+	this->m_speed = 100.0f;
+	m_isDead = false;
 }
 
-void AIEnemy::Update(Map& map, float deltaTime, sf::RenderWindow& window)
+AIEnemy::~AIEnemy() {}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+void AIEnemy::SetPosition(Map& map)
 {
-	setPosition(map);
-	drawEnemy(window);
-	movement(deltaTime, map);
+
 }
 
-void AIEnemy::setPosition(Map& map)
+void AIEnemy::SetDead(bool value)
 {
-	if (ok == 0)
-	{
-		for (uint16_t index_x = 0;index_x < map.GetSize().x;index_x++)
-		{
-			for (uint16_t index_y = 0;index_y < map.GetSize().y;index_y++)
-			{
-				if (map.GetMapTiles()[index_x][index_y].GetType() == 0)
-				{
-					size.x = 80;
-					size.y = 80;
-					m_sprite.setPosition(map.GetMapTiles()[index_x][index_y].GetCoordinates().first + m_sprite.getSize().x + 25, map.GetMapTiles()[index_x][index_y].GetCoordinates().second + m_sprite.getSize().y + 25);
-					m_sprite.setSize(size);
-					ok = 1;
-				}
-			}
-		}
-	}
+	this->m_isDead = value;
 }
 
-sf::Vector2u AIEnemy::getPositionOnMap(Map& map)
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+const sf::RectangleShape& AIEnemy::GetSprite()
 {
-	float min = size.x * size.y;
-	position.x = map.GetMapTiles()[0][0].GetSprite().getPosition().x + m_sprite.getSize().x / 2;
-	position.y = map.GetMapTiles()[0][0].GetSprite().getPosition().y + m_sprite.getSize().y / 2;
+	return m_sprite;
+}
+
+const sf::Vector2f& AIEnemy::GetCenterPosition()
+{
+	return sf::Vector2f(m_sprite.getPosition().x + m_size.x / 2, m_sprite.getPosition().y + m_size.y / 2);
+}
+
+const sf::Vector2u& AIEnemy::GetPositionOnMap(Map& map)
+{
+	float min = m_size.x * m_size.y;
+	m_position.x = map.GetMapTiles()[0][0].GetSprite().getPosition().x + m_sprite.getSize().x / 2;
+	m_position.y = map.GetMapTiles()[0][0].GetSprite().getPosition().y + m_sprite.getSize().y / 2;
 
 	for (int indexX = 0; indexX < map.GetSize().x; indexX++)
 	{
 		for (int indexY = 0; indexY < map.GetSize().y; indexY++)
+		{
+			if (GetDistance(map.GetMapTiles()[indexX][indexY].GetSprite().getPosition().x + m_sprite.getSize().x / 2, map.GetMapTiles()[indexX][indexY].GetSprite().getPosition().y + m_sprite.getSize().y / 2) < min)
 			{
-				if (distance(getCenterPosition().x, getCenterPosition().y, map.GetMapTiles()[indexX][indexY].GetSprite().getPosition().x + m_sprite.getSize().x / 2, map.GetMapTiles()[indexX][indexY].GetSprite().getPosition().y + m_sprite.getSize().y / 2) < min)
-				{
-					min = distance(getCenterPosition().x, getCenterPosition().y, map.GetMapTiles()[indexX][indexY].GetSprite().getPosition().x + m_sprite.getSize().x / 2, map.GetMapTiles()[indexX][indexY].GetSprite().getPosition().y + m_sprite.getSize().y / 2);
-					position.x = indexX;
-					position.y = indexY;
-				}
+				min = GetDistance(map.GetMapTiles()[indexX][indexY].GetSprite().getPosition().x + m_sprite.getSize().x / 2, map.GetMapTiles()[indexX][indexY].GetSprite().getPosition().y + m_sprite.getSize().y / 2);
+				m_position.x = indexX;
+				m_position.y = indexY;
 			}
 		}
+	}
 
-	return position;
+	return m_position;
 }
 
-void AIEnemy::movement(float deltaTime, Map& map)
+const float& AIEnemy::GetDistance(float x, float y)
 {
-	sf::Vector2f movement(0.0f, 0.0f);
-	decisions(map);
-	if (direction.compare("UP") == 0)
-	{
-		movement.y -= speed * deltaTime;
-		animation1.axuCurrentImage.y = 9;
-	}
-	if (direction.compare("DOWN") == 0)
-	{
-		movement.y += speed * deltaTime;
-		animation1.axuCurrentImage.y = 3;
-	}
-	
-	if (direction.compare("RIGHT") == 0)
-	{
-		movement.x+= speed * deltaTime;
-		animation1.axuCurrentImage.y = 0;
-	}
-
-	if (direction.compare("LEFT") == 0)
-	{
-		movement.x -= speed * deltaTime;
-		animation1.axuCurrentImage.y = 6;
-	}
-	
-	
-	if (movement.x == 0 && movement.y == 0)
-	{
-		animation1.update(0, deltaTime, axuCurrentImage.y, 1);
-	}
-	else
-	{
-		animation1.update(0, deltaTime, axuCurrentImage.y, 3);
-	}
-	m_sprite.setTextureRect(animation1.uvRect);
-	m_sprite.move(movement);
+	return sqrt(pow(x - GetCenterPosition().x, 2) + pow((y - GetCenterPosition().y), 2));
 }
 
-void AIEnemy::drawEnemy(sf::RenderWindow& window)
+const sf::Vector2f& AIEnemy::getSize()
+{
+	return m_size;
+}
+
+const bool& AIEnemy::IsDead()
+{
+	return m_isDead;
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+void AIEnemy::Draw(sf::RenderWindow& window)
 {
 	window.draw(m_sprite);
 }
 
-bool AIEnemy::isGoingToCollide(Map& map)
+void AIEnemy::Functionality(float& deltaTime, Map& map, sf::RenderWindow& window)
 {
-	if (direction.compare("UP") == 0)
-	{
-		if (map.GetMapTiles()[getPositionOnMap(map).x][getPositionOnMap(map).y - 1].GetType() == 0)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
-	if (direction.compare("DOWN") == 0)
-	{
-		if (map.GetMapTiles()[getPositionOnMap(map).x][getPositionOnMap(map).y + 1].GetType() == 0)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
-	if (direction.compare("RIGHT") == 0)
-	{
-		if (map.GetMapTiles()[getPositionOnMap(map).x + 1][getPositionOnMap(map).y].GetType() == 0)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
-	if (direction.compare("LEFT") == 0)
-	{
-		if (map.GetMapTiles()[getPositionOnMap(map).x - 1][getPositionOnMap(map).y].GetType() == 0)
-		{
-			return false;
-		}
-		else
-		{
-			return true;
-		}
-	}
+	Draw(window);
 }
-
-bool AIEnemy::isOnEdge(Map& map)
-{
-	if (map.GetMapTiles()[getPositionOnMap(map).x][getPositionOnMap(map).y - 1].GetType() == 10
-		|| map.GetMapTiles()[getPositionOnMap(map).x][getPositionOnMap(map).y + 1].GetType() == 10
-		|| map.GetMapTiles()[getPositionOnMap(map).x - 1][getPositionOnMap(map).y].GetType() == 10
-		|| map.GetMapTiles()[getPositionOnMap(map).x + 1][getPositionOnMap(map).y].GetType() == 10)
-	{
-		return true;
-	}
-	return false;
-}
-
-
-void AIEnemy::decisions(Map& map)
-{
-	int randAux;
-	randAux=rand() % 4;
-	randAux = std::clamp(randAux, 1, 4);
-	if ((isGoingToCollide(map) || isOnEdge(map)) && direction.compare("UP") == 0)
-	{
-		direction = Directions[randAux];
-	}
-	else if ((isGoingToCollide(map) || isOnEdge(map)) && direction.compare("DOWN") == 0)
-	{
-		direction = Directions[randAux];
-	}
-	else if((isGoingToCollide(map) || isOnEdge(map)) && direction.compare("LEFT") == 0)
-	{
-		direction = Directions[randAux];
-	}
-	else if((isGoingToCollide(map) || isOnEdge(map)) && direction.compare("RIGHT") == 0)
-	{
-		srand(NULL);
-		direction = Directions[randAux];
-	}
-	if (randAux == 4)
-	{
-		srand(NULL);
-	}
-}
-
-sf::Vector2f AIEnemy::getCenterPosition()
-{
-	return sf::Vector2f(m_sprite.getPosition().x + size.x / 2, m_sprite.getPosition().y + size.y / 2);
-}
-
-float AIEnemy::distance(float x1, float y1, float x2, float y2)
-{
-	return sqrt(pow((x2 - x1), 2) + pow((y2 - y1), 2));
-}
-
-AIEnemy::AIEnemy()
-{
-}
-

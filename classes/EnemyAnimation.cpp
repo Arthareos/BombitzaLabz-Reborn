@@ -1,20 +1,19 @@
 #include "EnemyAnimation.h"
 
-EnemyAnimation::EnemyAnimation()
-{
-}
+EnemyAnimation::EnemyAnimation() {}
 
 EnemyAnimation::EnemyAnimation(sf::Texture* m_texture, sf::Vector2u m_imageCount, float switchTime)
 {
 	this->m_imageCount = m_imageCount;
 	this->switchTime = switchTime;
+
 	totalTime = 0.0f;
 	m_currentImage.x = 0;
 	m_currentImage.y = axuCurrentImage.y;
 	axuCurrentImage.x = 0;
+
 	uvRect.width = m_texture->getSize().x / float(m_imageCount.x);
 	uvRect.height = m_texture->getSize().y / float(m_imageCount.y);
-
 }
 
 EnemyAnimation& EnemyAnimation::operator=(EnemyAnimation& animation2)
@@ -50,6 +49,3 @@ void EnemyAnimation::update(int collum, float deltaTime, unsigned int animationN
 	uvRect.left = m_currentImage.x * uvRect.width;
 	uvRect.top = m_currentImage.y * uvRect.height;
 }
-
-
-
