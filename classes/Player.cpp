@@ -21,7 +21,7 @@ Player::Player(sf::Vector2u imageCount, uint16_t highscore)
 	m_size = sf::Vector2f(60, 60);
 	m_sprite.setSize(m_size);
 	m_collisionDetector.setSize(sf::Vector2f(40, 40));
-	m_collisionDetector.setFillColor(sf::Color::Transparent);
+	m_collisionDetector.setFillColor(sf::Color::Red);
 
 	this->m_speed = 100.0f;
 
@@ -43,19 +43,19 @@ void Player::SetPosition(Map& map, uint16_t position)
 
 	switch (position) {
 	case 0:
-		aux = sf::Vector2f(map.GetMapTiles().at(1).at(1).GetSprite()->getPosition().x, map.GetMapTiles().at(1).at(1).GetSprite()->getPosition().y);
+		aux = sf::Vector2f(map.GetMapTiles().at(1).at(1).GetSprite().getPosition().x, map.GetMapTiles().at(1).at(1).GetSprite().getPosition().y);
 		break;
 	case 1:
-		aux = sf::Vector2f(map.GetMapTiles().at(map.GetSize().x - 2).at(map.GetSize().y - 2).GetSprite()->getPosition().x, map.GetMapTiles().at(map.GetSize().x - 2).at(map.GetSize().y - 2).GetSprite()->getPosition().y);
+		aux = sf::Vector2f(map.GetMapTiles().at(map.GetSize().x - 2).at(map.GetSize().y - 2).GetSprite().getPosition().x, map.GetMapTiles().at(map.GetSize().x - 2).at(map.GetSize().y - 2).GetSprite().getPosition().y);
 		break;
 	case 2:
-		aux = sf::Vector2f(map.GetMapTiles().at(map.GetSize().x - 2).at(1).GetSprite()->getPosition().x, map.GetMapTiles().at(map.GetSize().x - 2).at(1).GetSprite()->getPosition().y);
+		aux = sf::Vector2f(map.GetMapTiles().at(map.GetSize().x - 2).at(1).GetSprite().getPosition().x, map.GetMapTiles().at(map.GetSize().x - 2).at(1).GetSprite().getPosition().y);
 		break;
 	case 3:
-		aux = sf::Vector2f(map.GetMapTiles().at(1).at(map.GetSize().y - 2).GetSprite()->getPosition().x, map.GetMapTiles().at(1).at(map.GetSize().y - 2).GetSprite()->getPosition().y);
+		aux = sf::Vector2f(map.GetMapTiles().at(1).at(map.GetSize().y - 2).GetSprite().getPosition().x, map.GetMapTiles().at(1).at(map.GetSize().y - 2).GetSprite().getPosition().y);
 		break;
 	default:
-		aux = sf::Vector2f(map.GetMapTiles().at(1).at(1).GetSprite()->getPosition().x, map.GetMapTiles().at(1).at(1).GetSprite()->getPosition().y);
+		aux = sf::Vector2f(map.GetMapTiles().at(1).at(1).GetSprite().getPosition().x, map.GetMapTiles().at(1).at(1).GetSprite().getPosition().y);
 		break;
 	}
 
@@ -103,16 +103,16 @@ const sf::Vector2f& Player::GetCenterPosition()
 const sf::Vector2u& Player::GetPositionOnMap(Map& map)
 {
 	float min = m_size.x * m_size.y;
-	m_position.x = map.GetMapTiles()[0][0].GetSprite()->getPosition().x + m_sprite.getSize().x / 2;
-	m_position.y = map.GetMapTiles()[0][0].GetSprite()->getPosition().y + m_sprite.getSize().y / 2;
+	m_position.x = map.GetMapTiles()[0][0].GetSprite().getPosition().x + m_sprite.getSize().x / 2;
+	m_position.y = map.GetMapTiles()[0][0].GetSprite().getPosition().y + m_sprite.getSize().y / 2;
 
 	for (int indexX = 0; indexX < map.GetSize().x; indexX++)
 	{
 		for (int indexY = 0; indexY < map.GetSize().y; indexY++)
 		{
-			if (GetDistance(GetCenterPosition().x, GetCenterPosition().y, map.GetMapTiles()[indexX][indexY].GetSprite()->getPosition().x + m_sprite.getSize().x / 2, map.GetMapTiles()[indexX][indexY].GetSprite()->getPosition().y + m_sprite.getSize().y / 2) < min)
+			if (GetDistance(GetCenterPosition().x, GetCenterPosition().y, map.GetMapTiles()[indexX][indexY].GetSprite().getPosition().x + m_sprite.getSize().x / 2, map.GetMapTiles()[indexX][indexY].GetSprite().getPosition().y + m_sprite.getSize().y / 2) < min)
 			{
-				min = GetDistance(GetCenterPosition().x, GetCenterPosition().y, map.GetMapTiles()[indexX][indexY].GetSprite()->getPosition().x + m_sprite.getSize().x / 2, map.GetMapTiles()[indexX][indexY].GetSprite()->getPosition().y + m_sprite.getSize().y / 2);
+				min = GetDistance(GetCenterPosition().x, GetCenterPosition().y, map.GetMapTiles()[indexX][indexY].GetSprite().getPosition().x + m_sprite.getSize().x / 2, map.GetMapTiles()[indexX][indexY].GetSprite().getPosition().y + m_sprite.getSize().y / 2);
 				m_position.x = indexX;
 				m_position.y = indexY;
 			}
@@ -159,7 +159,7 @@ const uint64_t& Player::GetHighscore()
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-void Player::Movement(float& deltaTime, ControlHandler& handler)
+void Player::Movement(float& deltaTime, ControlHandler& handler, Map& map)
 {
 	sf::Vector2f movement(0.0f, 0.0f);
 
@@ -173,6 +173,64 @@ void Player::Movement(float& deltaTime, ControlHandler& handler)
 				{
 
 				}
+			}
+		}
+	}
+
+	for (int indexX = 0; indexX < map.GetMapTiles().size(); indexX++)
+	{
+		for (int indexY = 0; indexY < map.GetMapTiles().at(indexX).size(); indexY++)
+		{
+			if (map.GetMapTiles().at(indexX).at(indexY).GetType() != 0)
+			{
+				sf::FloatRect playerBounds = m_collisionDetector.getGlobalBounds();
+
+				sf::FloatRect obstacleBounds = map.GetMapTiles().at(indexX).at(indexY).GetSprite().getGlobalBounds();
+
+				m_nextPosition = playerBounds;
+				m_nextPosition.left += movement.x;
+				m_nextPosition.top += movement.y;
+
+				if (obstacleBounds.intersects(m_nextPosition))
+				{
+					//Bottom collision
+					if (playerBounds.top < obstacleBounds.top
+						&& playerBounds.top + playerBounds.height < obstacleBounds.top + obstacleBounds.height
+						&& playerBounds.left < obstacleBounds.left + obstacleBounds.width
+						&& playerBounds.left + playerBounds.width > obstacleBounds.left)
+					{
+						movement.y = 0.f;
+					}
+					else
+						//Top collision
+						if (playerBounds.top > obstacleBounds.top
+							&& playerBounds.top + playerBounds.height > obstacleBounds.top + obstacleBounds.height
+							&& playerBounds.left < obstacleBounds.left + obstacleBounds.width
+							&& playerBounds.left + playerBounds.width > obstacleBounds.left)
+						{
+							movement.y = 0.f;
+						}
+						else
+							//Right collision
+							if (playerBounds.left - 20 < obstacleBounds.left
+								&& playerBounds.left + playerBounds.width < obstacleBounds.left + obstacleBounds.width
+								&& playerBounds.top < obstacleBounds.top + obstacleBounds.height
+								&& playerBounds.top + playerBounds.height > obstacleBounds.top)
+							{
+								movement.x = 0.f;
+							}
+							else
+								//Left collision
+								if (playerBounds.left + 20 > obstacleBounds.left
+									&& playerBounds.left + playerBounds.width > obstacleBounds.left + obstacleBounds.width
+									&& playerBounds.top < obstacleBounds.top + obstacleBounds.height
+									&& playerBounds.top + playerBounds.height > obstacleBounds.top)
+								{
+									movement.x = 0.f;
+								}
+
+				}
+
 			}
 		}
 	}
@@ -245,6 +303,6 @@ void Player::DrawPlayer(sf::RenderWindow& window)
 
 void Player::Functionality(float& deltaTime, Map& map, sf::RenderWindow& window, ControlHandler& handler)
 {
-	Movement(deltaTime, handler);
+	Movement(deltaTime, handler, map);
 	DrawPlayer(window);
 }

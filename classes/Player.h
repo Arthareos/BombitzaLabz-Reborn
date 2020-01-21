@@ -15,6 +15,7 @@ protected:
 	sf::Vector2u m_position;
 	sf::RectangleShape m_sprite;
 	sf::RectangleShape m_collisionDetector;
+	sf::FloatRect m_nextPosition;
 
 	float m_animationSwitchTime;
 	float m_speed;
@@ -51,7 +52,7 @@ public:
 	const uint64_t& GetScore();
 	const uint64_t& GetHighscore();
 
-	void Movement(float& deltaTime, ControlHandler& handler);
+	void Movement(float& deltaTime, ControlHandler& handler, Map& map);
 	bool MoveUp(float& deltaTime, ControlHandler& handler, sf::Vector2f& movement);
 	bool MoveDown(float& deltaTime, ControlHandler& handler, sf::Vector2f& movement);
 	bool MoveRight(float& deltaTime, ControlHandler& handler, sf::Vector2f& movement);

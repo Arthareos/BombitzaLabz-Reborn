@@ -118,26 +118,26 @@ GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t&
 			playerView.setCenter(player.GetCenterPosition());
 			window.setView(playerView);
 
-			if (playerView.getCenter().x - playerView.getSize().x / 2 < m_map.GetMapTiles().at(0).at(0).GetSprite()->getPosition().x)
+			if (playerView.getCenter().x - playerView.getSize().x / 2 < m_map.GetMapTiles().at(0).at(0).GetSprite().getPosition().x)
 			{
-				playerView.setCenter(m_map.GetMapTiles().at(0).at(0).GetSprite()->getPosition().x + window.getSize().x / 2, playerView.getCenter().y);
+				playerView.setCenter(m_map.GetMapTiles().at(0).at(0).GetSprite().getPosition().x + window.getSize().x / 2, playerView.getCenter().y);
 				window.setView(playerView);
 			}
-			if (playerView.getCenter().y - playerView.getSize().y / 2  < m_map.GetMapTiles().at(0).at(0).GetSprite()->getPosition().y - 64)
+			if (playerView.getCenter().y - playerView.getSize().y / 2  < m_map.GetMapTiles().at(0).at(0).GetSprite().getPosition().y - 64)
 			{
-				playerView.setCenter(playerView.getCenter().x , m_map.GetMapTiles().at(0).at(0).GetSprite()->getPosition().y + window.getSize().y / 2 - 64);
+				playerView.setCenter(playerView.getCenter().x , m_map.GetMapTiles().at(0).at(0).GetSprite().getPosition().y + window.getSize().y / 2 - 64);
 				window.setView(playerView);
 			}
 
 			//Colt jos-dreapta
-			if ((playerView.getCenter().x + playerView.getSize().x) - playerView.getSize().x / 2 - 64 > m_map.GetMapTiles().at(m_map.GetSize().x - 1).at(m_map.GetSize().y - 1).GetSprite()->getPosition().x)
+			if ((playerView.getCenter().x + playerView.getSize().x) - playerView.getSize().x / 2 - 64 > m_map.GetMapTiles().at(m_map.GetSize().x - 1).at(m_map.GetSize().y - 1).GetSprite().getPosition().x)
 			{
-				playerView.setCenter(m_map.GetMapTiles().at(m_map.GetSize().x - 1).at(m_map.GetSize().y - 1).GetSprite()->getPosition().x - window.getSize().x / 2 + 64, playerView.getCenter().y);
+				playerView.setCenter(m_map.GetMapTiles().at(m_map.GetSize().x - 1).at(m_map.GetSize().y - 1).GetSprite().getPosition().x - window.getSize().x / 2 + 64, playerView.getCenter().y);
 				window.setView(playerView);
 			}
-			if ((playerView.getCenter().y + playerView.getSize().y) - playerView.getSize().y / 2 - 64 > m_map.GetMapTiles().at(m_map.GetSize().x - 1).at(m_map.GetSize().y - 1).GetSprite()->getPosition().y)
+			if ((playerView.getCenter().y + playerView.getSize().y) - playerView.getSize().y / 2 - 64 > m_map.GetMapTiles().at(m_map.GetSize().x - 1).at(m_map.GetSize().y - 1).GetSprite().getPosition().y)
 			{
-				playerView.setCenter(playerView.getCenter().x, m_map.GetMapTiles().at(m_map.GetSize().x - 1).at(m_map.GetSize().y - 1).GetSprite()->getPosition().y - window.getSize().y / 2 + 64);
+				playerView.setCenter(playerView.getCenter().x, m_map.GetMapTiles().at(m_map.GetSize().x - 1).at(m_map.GetSize().y - 1).GetSprite().getPosition().y - window.getSize().y / 2 + 64);
 				window.setView(playerView);
 			}
 		}

@@ -33,7 +33,7 @@ public:
 
 	std::pair<float_t, float_t>& GetCoordinates();
 	std::pair<uint16_t, uint16_t>& GetIndex();
-	sf::Sprite* GetSprite();
+	sf::Sprite& GetSprite();
 	float_t GetSize();
 	int16_t GetType();
 	bool GetBomb();

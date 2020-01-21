@@ -19,7 +19,7 @@ public:
 	sf::Vector2u position;
 	sf::Vector2u position2;
 
-	sf::RectangleShape enemy_sprite;
+	sf::RectangleShape m_sprite;
 	float auxDeltaTime = 0.0f;
 	EnemyAnimation animation1;
 

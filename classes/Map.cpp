@@ -71,10 +71,10 @@ Map::Map(sf::RenderWindow& window, int16_t width, int16_t height, Biome biome)
 			m_tiles.at(indexX).at(indexY).SetCrate(false);
 			m_tiles.at(indexX).at(indexY).SetIndex(indexX, indexY);
 
-			m_tiles.at(indexX).at(indexY).GetSprite()->setScale(2, 2);
-			m_tiles.at(indexX).at(indexY).GetSprite()->setTextureRect(sf::IntRect(m_tiles.at(indexX).at(indexY).GetSprite()->getPosition().x * 32, m_tiles.at(indexX).at(indexY).GetSprite()->getPosition().y * 32, 32, 32));
+			m_tiles.at(indexX).at(indexY).GetSprite().setScale(2, 2);
+			m_tiles.at(indexX).at(indexY).GetSprite().setTextureRect(sf::IntRect(m_tiles.at(indexX).at(indexY).GetSprite().getPosition().x * 32, m_tiles.at(indexX).at(indexY).GetSprite().getPosition().y * 32, 32, 32));
 			m_tiles.at(indexX).at(indexY).SetCoordinates(indexX + m_offsetWidth, indexY + m_offsetHeight);
-			m_tiles.at(indexX).at(indexY).GetSprite()->setPosition(indexX * 64 + m_offsetHeight, indexY * 64 + m_offsetWidth);
+			m_tiles.at(indexX).at(indexY).GetSprite().setPosition(indexX * 64 + m_offsetHeight, indexY * 64 + m_offsetWidth);
 		}
 	}
 
@@ -93,9 +93,9 @@ Map::Map(sf::RenderWindow& window, int16_t width, int16_t height, Biome biome)
 			m_tiles.at(auxWidth).at(auxHeight).SetCrate(true);
 			m_tiles.at(auxWidth).at(auxHeight).SetType(1);
 			m_tiles.at(auxWidth).at(auxHeight).SetTexture(textureDirectory);
-			m_tiles.at(auxWidth).at(auxHeight).GetSprite()->setScale(2, 2);
-			m_tiles.at(auxWidth).at(auxHeight).GetSprite()->setTextureRect(sf::IntRect(m_tiles.at(auxWidth).at(auxHeight).GetSprite()->getPosition().x * 32, m_tiles.at(auxWidth).at(auxHeight).GetSprite()->getPosition().y * 32, 32, 32));
-			m_tiles.at(auxWidth).at(auxHeight).GetSprite()->setPosition(auxWidth * 64 + m_offsetHeight, auxHeight * 64 + m_offsetWidth);
+			m_tiles.at(auxWidth).at(auxHeight).GetSprite().setScale(2, 2);
+			m_tiles.at(auxWidth).at(auxHeight).GetSprite().setTextureRect(sf::IntRect(m_tiles.at(auxWidth).at(auxHeight).GetSprite().getPosition().x * 32, m_tiles.at(auxWidth).at(auxHeight).GetSprite().getPosition().y * 32, 32, 32));
+			m_tiles.at(auxWidth).at(auxHeight).GetSprite().setPosition(auxWidth * 64 + m_offsetHeight, auxHeight * 64 + m_offsetWidth);
 			numberCrates--;
 		}
 
@@ -169,10 +169,10 @@ void Map::DestroyCrate(uint16_t indexX, uint16_t indexY)
 	{
 		m_tiles.at(indexX).at(indexY).SetCrate(false);
 		m_tiles.at(indexX).at(indexY).SetType(0);
-		m_tiles.at(indexX).at(indexY).GetSprite()->setScale(2, 2);
-		m_tiles.at(indexX).at(indexY).GetSprite()->setTextureRect(sf::IntRect(m_tiles.at(indexX).at(indexY).GetSprite()->getPosition().x * 32, m_tiles.at(indexX).at(indexY).GetSprite()->getPosition().y * 32, 32, 32));
+		m_tiles.at(indexX).at(indexY).GetSprite().setScale(2, 2);
+		m_tiles.at(indexX).at(indexY).GetSprite().setTextureRect(sf::IntRect(m_tiles.at(indexX).at(indexY).GetSprite().getPosition().x * 32, m_tiles.at(indexX).at(indexY).GetSprite().getPosition().y * 32, 32, 32));
 		m_tiles.at(indexX).at(indexY).SetCoordinates(indexX + m_offsetWidth, indexY + m_offsetHeight);
-		m_tiles.at(indexX).at(indexY).GetSprite()->setPosition(indexX * 64 + m_offsetHeight, indexY * 64 + m_offsetWidth);
+		m_tiles.at(indexX).at(indexY).GetSprite().setPosition(indexX * 64 + m_offsetHeight, indexY * 64 + m_offsetWidth);
 	}
 }
 

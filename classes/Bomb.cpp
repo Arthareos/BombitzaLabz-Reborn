@@ -43,7 +43,7 @@ void Bomb::placeBomb(Map& map, Player& player, ControlHandler& handler)
 				map.GetMapTiles()[player.GetPositionOnMap(map).x][player.GetPositionOnMap(map).y].SetBomb(true);
 
 				sprBomb.setSize(size);
-				sprBomb.setPosition(map.GetMapTiles()[player.GetPositionOnMap(map).x][player.GetPositionOnMap(map).y].GetSprite()->getPosition().x, map.GetMapTiles()[player.GetPositionOnMap(map).x][player.GetPositionOnMap(map).y].GetSprite()->getPosition().y);
+				sprBomb.setPosition(map.GetMapTiles()[player.GetPositionOnMap(map).x][player.GetPositionOnMap(map).y].GetSprite().getPosition().x, map.GetMapTiles()[player.GetPositionOnMap(map).x][player.GetPositionOnMap(map).y].GetSprite().getPosition().y);
 				vecBomb.push_back(std::make_pair(sprBomb, deltaTimeBomb));
 
 				position.push_back(player.GetPositionOnMap(map));
@@ -68,7 +68,7 @@ void Bomb::drawBomb(sf::RenderWindow& window, float deltaTime)
 //creating the positions for the 
 void Bomb::explodeCenter(Map& map, Explosion& explosion, int i)
 {
-	explosion.explVec.at(0).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y].GetSprite()->getPosition());
+	explosion.explVec.at(0).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y].GetSprite().getPosition());
 	explosion.explVec.at(0).setSize(sf::Vector2f(80, 80));
 
 	explosionVector.push_back(std::make_pair(explosion.explVec.at(0),deltaTimeBomb));
@@ -84,7 +84,7 @@ void Bomb::explodeUp(Map& map, Explosion& explosion, int i)
 	{
 		if (map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y - k].GetType() == 0)
 		{
-			explosion.explVec.at(1).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y - k].GetSprite()->getPosition());
+			explosion.explVec.at(1).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y - k].GetSprite().getPosition());
 			explosion.explVec.at(1).setSize(sf::Vector2f(80, 80));
 			explosionVector.push_back(std::make_pair(explosion.explVec.at(1), deltaTimeBomb));
 
@@ -102,7 +102,7 @@ void Bomb::explodeUp(Map& map, Explosion& explosion, int i)
 	{
 		if (map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y - explosion.getExplosionSize()].GetType() == 0)
 		{
-			explosion.explVec.at(3).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y - explosion.getExplosionSize()].GetSprite()->getPosition());
+			explosion.explVec.at(3).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y - explosion.getExplosionSize()].GetSprite().getPosition());
 			explosion.explVec.at(3).setSize(sf::Vector2f(80, 80));
 			explosionVector.push_back(std::make_pair(explosion.explVec.at(3), deltaTimeBomb));
 		}
@@ -123,7 +123,7 @@ void Bomb::explodeDown(Map& map, Explosion& explosion, int i)
 	{
 		if (map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y + k].GetType() == 0)
 		{
-			explosion.explVec.at(1).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y + k].GetSprite()->getPosition());
+			explosion.explVec.at(1).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y + k].GetSprite().getPosition());
 			explosion.explVec.at(1).setSize(sf::Vector2f(80, 80));
 			explosionVector.push_back(std::make_pair(explosion.explVec.at(1), deltaTimeBomb));
 
@@ -142,7 +142,7 @@ void Bomb::explodeDown(Map& map, Explosion& explosion, int i)
 	{
 		if (map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y + explosion.getExplosionSize()].GetType() == 0)
 		{
-			explosion.explVec.at(4).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y + explosion.getExplosionSize()].GetSprite()->getPosition());
+			explosion.explVec.at(4).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y + explosion.getExplosionSize()].GetSprite().getPosition());
 			explosion.explVec.at(4).setSize(sf::Vector2f(80, 80));
 			explosionVector.push_back(std::make_pair(explosion.explVec.at(4), deltaTimeBomb));
 		}
@@ -163,7 +163,7 @@ void Bomb::explodeLeft(Map& map, Explosion& explosion, int i)
 	{
 		if (map.GetMapTiles()[getBombPositionOnMap(i).x - k][getBombPositionOnMap(i).y].GetType() == 0)
 		{
-			explosion.explVec.at(2).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x - k][getBombPositionOnMap(i).y].GetSprite()->getPosition());
+			explosion.explVec.at(2).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x - k][getBombPositionOnMap(i).y].GetSprite().getPosition());
 			explosion.explVec.at(2).setSize(sf::Vector2f(80, 80));
 			explosionVector.push_back(std::make_pair(explosion.explVec.at(2), deltaTimeBomb));
 
@@ -182,7 +182,7 @@ void Bomb::explodeLeft(Map& map, Explosion& explosion, int i)
 	{
 		if (map.GetMapTiles()[getBombPositionOnMap(i).x - explosion.getExplosionSize()][getBombPositionOnMap(i).y].GetType() == 0)
 		{
-			explosion.explVec.at(6).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x - explosion.getExplosionSize()][getBombPositionOnMap(i).y].GetSprite()->getPosition());
+			explosion.explVec.at(6).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x - explosion.getExplosionSize()][getBombPositionOnMap(i).y].GetSprite().getPosition());
 			explosion.explVec.at(6).setSize(sf::Vector2f(80, 80));
 			explosionVector.push_back(std::make_pair(explosion.explVec.at(6), deltaTimeBomb));
 		}
@@ -203,7 +203,7 @@ void Bomb::explodeRight(Map& map, Explosion& explosion, int i)
 	{
 		if (map.GetMapTiles()[getBombPositionOnMap(i).x + k][getBombPositionOnMap(i).y].GetType() == 0)
 		{
-			explosion.explVec.at(2).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x + k][getBombPositionOnMap(i).y].GetSprite()->getPosition());
+			explosion.explVec.at(2).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x + k][getBombPositionOnMap(i).y].GetSprite().getPosition());
 			explosion.explVec.at(2).setSize(sf::Vector2f(80, 80));
 			explosionVector.push_back(std::make_pair(explosion.explVec.at(2), deltaTimeBomb));
 
@@ -222,7 +222,7 @@ void Bomb::explodeRight(Map& map, Explosion& explosion, int i)
 	{
 		if (map.GetMapTiles()[getBombPositionOnMap(i).x + explosion.getExplosionSize()][getBombPositionOnMap(i).y].GetType() == 0)
 		{
-			explosion.explVec.at(5).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x + explosion.getExplosionSize()][getBombPositionOnMap(i).y].GetSprite()->getPosition());
+			explosion.explVec.at(5).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x + explosion.getExplosionSize()][getBombPositionOnMap(i).y].GetSprite().getPosition());
 			explosion.explVec.at(5).setSize(sf::Vector2f(80, 80));
 			explosionVector.push_back(std::make_pair(explosion.explVec.at(5), deltaTimeBomb));
 		}

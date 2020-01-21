@@ -63,9 +63,9 @@ std::pair<uint16_t, uint16_t>& MapTile::GetIndex()
 	return m_index;
 }
 
-sf::Sprite* MapTile::GetSprite()
+sf::Sprite& MapTile::GetSprite()
 {
-	return &this->m_sprite;
+	return this->m_sprite;
 }
 
 float_t MapTile::GetSize()
