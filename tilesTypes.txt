@@ -1,0 +1,4 @@
+00 - clear
+10 - outer wall
+11 - inner wall
+01 - box

@@ -1,0 +1,6 @@
+1. MainMenu
+2. GameStart
+3. Battle
+4. Setup
+5. Password
+0. Exit
