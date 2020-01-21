@@ -57,7 +57,7 @@ void GetLetterboxView(sf::View& view, sf::RenderWindow& window) {
 	view.setViewport(sf::FloatRect(posX, posY, sizeX, sizeY));
 }
 
-bool IsPlayable(Player& player, Scoreboard& scoreboard)
+bool IsPlayable(Player& player, Scoreboard& scoreboard, std::vector<AIEnemy> enemies)
 {
 	bool ok = true;
 
@@ -69,7 +69,18 @@ bool IsPlayable(Player& player, Scoreboard& scoreboard)
 	{
 		ok = false;
 	}
-
+	bool enemyaux = true;
+	for (auto enemy : enemies)
+	{
+		if (enemy.IsDead() == false)
+		{
+			enemyaux = false;
+		}
+	}
+	if (enemyaux == true)
+	{
+		return false;
+	}
 	return ok;
 }
 
@@ -106,7 +117,6 @@ GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t&
 	sf::Music levelMusic;
 
 	if (!levelMusic.openFromFile(".\\resources\\music\\basicLevel.ogg"))
-	//if (!levelMusic.openFromFile(".\\resources\\music\\powerupLevel.ogg"))
 	{
 		std::cout << " +> [ERROR] Main Menu music file NOT found;" << std::endl;
 	}
@@ -122,7 +132,7 @@ GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t&
 	GetLetterboxView(playerView, window);
 	window.setView(playerView);
 
-	while (gameState % 10 == 2 && IsPlayable(player, m_scoreboard))
+	while (gameState % 10 == 2 && IsPlayable(player, m_scoreboard, m_enemies))
 	{
 		float deltaTime = clock.restart().asSeconds();
 
@@ -207,7 +217,7 @@ GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t&
 		window.clear();
 	}
 
-	if (IsPlayable(player, m_scoreboard) == false)
+	if (IsPlayable(player, m_scoreboard, m_enemies) == false)
 	{
 		player.SetLives(player.GetLives() - 1);
 	}

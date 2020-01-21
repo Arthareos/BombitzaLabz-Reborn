@@ -75,9 +75,6 @@
     <ClCompile Include="classes\BattleStart.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="classes\Crate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="classes\Random.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -138,9 +135,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="classes\BattleStart.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="classes\Crate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="classes\Random.h">

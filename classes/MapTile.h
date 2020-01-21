@@ -5,8 +5,6 @@
 #include <SFML/System.hpp>
 #include <iostream>
 
-#include "Crate.h"
-
 class MapTile {
 private:
 	std::pair<float_t, float_t> m_coordinates;
