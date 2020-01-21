@@ -34,7 +34,7 @@ public:
 	AIEnemy(sf::Vector2u imageCount);
 	~AIEnemy();
 
-	void SetPosition(Map& map);
+	void SetPosition(sf::Vector2f position, Map& map);
 	void SetDead(bool value);
 
 	const sf::RectangleShape& GetSprite();
@@ -44,6 +44,7 @@ public:
 	const sf::Vector2f& getSize();
 	const bool& IsDead();
 
+	const sf::Vector2f& RandomPosition(Map& map);
 	void Movement(float& deltaTime, Map& map);
 	void Draw(sf::RenderWindow& window);
 	void Functionality(float& deltaTime, Map& map, sf::RenderWindow& window);

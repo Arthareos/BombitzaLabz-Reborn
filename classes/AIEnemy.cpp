@@ -4,51 +4,42 @@ AIEnemy::AIEnemy() {}
 
 AIEnemy::AIEnemy(sf::Vector2u imageCount)
 {
-	if (!m_texture.loadFromFile(".\\resources\\enemy.png"))
+	std::string textureDirectory = ".\\resources\\enemy.png";
+	if (!m_texture.loadFromFile(textureDirectory))
 	{
 		std::cout << " +> [ERROR] Enemy texture NOT loaded;" << std::endl;
 	}
 	else
 	{
 		std::cout << " +> [INFO] Enemy texture loaded;" << std::endl;
+
 		m_sprite.setTexture(&m_texture);
 	}
 
+	m_animationSwitchTime = 0.1f;
 	EnemyAnimation animation(&m_texture, imageCount, m_animationSwitchTime);
 	m_animation = animation;
 	m_size = sf::Vector2f(60, 60);
 	m_sprite.setSize(m_size);
 	m_collisionDetector.setSize(sf::Vector2f(40, 40));
 	m_collisionDetector.setFillColor(sf::Color::Transparent);
+	this->m_speed = 100.f;
 
-	this->m_speed = 100.0f;
 	m_isDead = false;
 }
 
 AIEnemy::~AIEnemy() {}
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-void AIEnemy::SetPosition(Map& map)
+void AIEnemy::Functionality(float& deltaTime, Map& map, sf::RenderWindow& window)
 {
-
+	Draw(window);
+	Movement(deltaTime, map);
 }
 
-void AIEnemy::SetDead(bool value)
+void AIEnemy::SetPosition(sf::Vector2f position, Map& map)
 {
-	this->m_isDead = value;
-}
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-const sf::RectangleShape& AIEnemy::GetSprite()
-{
-	return m_sprite;
-}
-
-const sf::Vector2f& AIEnemy::GetCenterPosition()
-{
-	return sf::Vector2f(m_sprite.getPosition().x + m_size.x / 2, m_sprite.getPosition().y + m_size.y / 2);
+	m_sprite.setPosition(map.GetMapTiles().at(position.x).at(position.y).GetSprite().getPosition());
+	m_collisionDetector.setPosition(m_sprite.getGlobalBounds().left + 12.f, m_sprite.getGlobalBounds().top + 20.0f);
 }
 
 const sf::Vector2u& AIEnemy::GetPositionOnMap(Map& map)
@@ -73,23 +64,6 @@ const sf::Vector2u& AIEnemy::GetPositionOnMap(Map& map)
 	return m_position;
 }
 
-const float& AIEnemy::GetDistance(float x, float y)
-{
-	return sqrt(pow(x - GetCenterPosition().x, 2) + pow((y - GetCenterPosition().y), 2));
-}
-
-const sf::Vector2f& AIEnemy::getSize()
-{
-	return m_size;
-}
-
-const bool& AIEnemy::IsDead()
-{
-	return m_isDead;
-}
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 void AIEnemy::Movement(float& deltaTime, Map& map)
 {
 	sf::Vector2f movement(0.0f, 0.0f);
@@ -102,6 +76,7 @@ void AIEnemy::Movement(float& deltaTime, Map& map)
 	{
 		movement.y += m_speed * deltaTime;
 		m_animation.m_auxCurrentImage.y = 3;
+
 	}
 	else if (m_direction == 3)
 	{
@@ -121,57 +96,63 @@ void AIEnemy::Movement(float& deltaTime, Map& map)
 		m_moveCounter = 0;
 	}
 
-	//Collision Detection
 	for (int indexX = 0; indexX < map.GetMapTiles().size(); indexX++)
 	{
 		for (int indexY = 0; indexY < map.GetMapTiles().at(indexX).size(); indexY++)
 		{
 			if (map.GetMapTiles().at(indexX).at(indexY).GetType() != 0)
 			{
-				sf::FloatRect playerBounds = m_collisionDetector.getGlobalBounds();
-
+				sf::FloatRect enemyBounds = m_collisionDetector.getGlobalBounds();
 				sf::FloatRect obstacleBounds = map.GetMapTiles().at(indexX).at(indexY).GetSprite().getGlobalBounds();
 
-				m_nextPosition = playerBounds;
+				m_nextPosition = enemyBounds;
 				m_nextPosition.left += movement.x;
 				m_nextPosition.top += movement.y;
 
 				if (obstacleBounds.intersects(m_nextPosition))
 				{
 					//Bottom collision
-					if (playerBounds.top < obstacleBounds.top
-						&& playerBounds.top + playerBounds.height < obstacleBounds.top + obstacleBounds.height
-						&& playerBounds.left < obstacleBounds.left + obstacleBounds.width
-						&& playerBounds.left + playerBounds.width > obstacleBounds.left)
+					if (enemyBounds.top < obstacleBounds.top
+						&& enemyBounds.top + enemyBounds.height < obstacleBounds.top + obstacleBounds.height
+						&& enemyBounds.left < obstacleBounds.left + obstacleBounds.width
+						&& enemyBounds.left + enemyBounds.width > obstacleBounds.left)
 					{
 						movement.y = 0.f;
+						//m_enemySprite.setPosition(enemyBounds.left, obstacleBounds.top - enemyBounds.height);
+						//nextPosition.left = enemyBounds.left;
 					}
 					else
 						//Top collision
-						if (playerBounds.top > obstacleBounds.top
-							&& playerBounds.top + playerBounds.height > obstacleBounds.top + obstacleBounds.height
-							&& playerBounds.left < obstacleBounds.left + obstacleBounds.width
-							&& playerBounds.left + playerBounds.width > obstacleBounds.left)
+						if (enemyBounds.top > obstacleBounds.top
+							&& enemyBounds.top + enemyBounds.height > obstacleBounds.top + obstacleBounds.height
+							&& enemyBounds.left < obstacleBounds.left + obstacleBounds.width
+							&& enemyBounds.left + enemyBounds.width > obstacleBounds.left)
 						{
 							movement.y = 0.f;
+							//m_enemySprite.setPosition(enemyBounds.left, obstacleBounds.top + obstacleBounds.height);
+							//nextPosition.left = enemyBounds.left;
 						}
 						else
 							//Right collision
-							if (playerBounds.left - 20 < obstacleBounds.left
-								&& playerBounds.left + playerBounds.width < obstacleBounds.left + obstacleBounds.width
-								&& playerBounds.top < obstacleBounds.top + obstacleBounds.height
-								&& playerBounds.top + playerBounds.height > obstacleBounds.top)
+							if (enemyBounds.left - 20 < obstacleBounds.left
+								&& enemyBounds.left + enemyBounds.width < obstacleBounds.left + obstacleBounds.width
+								&& enemyBounds.top < obstacleBounds.top + obstacleBounds.height
+								&& enemyBounds.top + enemyBounds.height > obstacleBounds.top)
 							{
 								movement.x = 0.f;
+								//m_enemySprite.setPosition(obstacleBounds.left - enemyBounds.width, enemyBounds.top);
+								//nextPosition.left = enemyBounds.left;
 							}
 							else
 								//Left collision
-								if (playerBounds.left + 20 > obstacleBounds.left
-									&& playerBounds.left + playerBounds.width > obstacleBounds.left + obstacleBounds.width
-									&& playerBounds.top < obstacleBounds.top + obstacleBounds.height
-									&& playerBounds.top + playerBounds.height > obstacleBounds.top)
+								if (enemyBounds.left + 20 > obstacleBounds.left
+									&& enemyBounds.left + enemyBounds.width > obstacleBounds.left + obstacleBounds.width
+									&& enemyBounds.top < obstacleBounds.top + obstacleBounds.height
+									&& enemyBounds.top + enemyBounds.height > obstacleBounds.top)
 								{
 									movement.x = 0.f;
+									//m_enemySprite.setPosition(obstacleBounds.left + obstacleBounds.width, enemyBounds.top);
+									//nextPosition.left = enemyBounds.left
 								}
 				}
 			}
@@ -192,15 +173,49 @@ void AIEnemy::Movement(float& deltaTime, Map& map)
 	m_collisionDetector.move(movement);
 }
 
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 void AIEnemy::Draw(sf::RenderWindow& window)
 {
+	m_sprite.setTexture(&m_texture);
 	window.draw(m_sprite);
 }
 
-void AIEnemy::Functionality(float& deltaTime, Map& map, sf::RenderWindow& window)
+const sf::Vector2f& AIEnemy::GetCenterPosition()
 {
-	Movement(deltaTime, map);
-	Draw(window);
+	return sf::Vector2f(m_sprite.getPosition().x + m_size.x / 2, m_sprite.getPosition().y + m_size.y / 2);
+}
+
+const float& AIEnemy::GetDistance(float x, float y)
+{
+	return sqrt(pow((x - GetCenterPosition().x), 2) + pow((y - GetCenterPosition().y), 2));
+}
+
+const bool PositionValidator(Map& map, int width, int height)
+{
+	if (map.GetMapTiles().at(width).at(height).GetType() != 0)
+	{
+		return false;
+	}
+	if ((height == 1 && width == 1) || (height == 2 && width == 1) || (height == 1 && width == 2) ||
+		(height == map.GetSize().y - 2 && width == map.GetSize().x - 2) || (height == map.GetSize().y - 3 && width == map.GetSize().x - 2) || (height == map.GetSize().y - 2 && width == map.GetSize().x - 3) ||
+		(height == map.GetSize().y - 2 && width == 1) || (height == map.GetSize().y - 2 && width == 2) || (height == map.GetSize().y - 3 && width == 1) ||
+		(height == 1 && width == map.GetSize().x - 2) || (height == 2 && map.GetSize().x - 2) || (height == 1 && width == map.GetSize().x - 3))
+	{
+		return false;
+	}
+	return true;
+}
+
+const sf::Vector2f& AIEnemy::RandomPosition(Map& map)
+{
+	srand(time(NULL));
+	int auxHeight = generateRandom((int)map.GetSize().x - 1);
+	int auxWidth = generateRandom((int)map.GetSize().y - 1);
+
+	while (PositionValidator(map, auxWidth, auxHeight) == false)
+	{
+		auxHeight = generateRandom((int)map.GetSize().y - 1);
+		auxWidth = generateRandom((int)map.GetSize().x - 1);
+	}
+
+	return sf::Vector2f(auxHeight, auxWidth);
 }

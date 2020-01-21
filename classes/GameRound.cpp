@@ -60,6 +60,10 @@ GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t&
 		AIEnemy enemy(sf::Vector2u(4, 20));
 		m_enemies.push_back(enemy);
 	}
+	for (int index = 0; index < m_enemies.size(); index++)
+	{
+		m_enemies.at(index).SetPosition(m_enemies.at(index).RandomPosition(m_map), m_map);
+	}
 	
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
