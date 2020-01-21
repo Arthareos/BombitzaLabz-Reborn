@@ -54,9 +54,6 @@
     <ClCompile Include="classes\GameRound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="classes\ExplosionAnimation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="classes\Explosion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -102,9 +99,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="classes\GameRound.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="classes\ExplosionAnimation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="classes\Explosion.h">

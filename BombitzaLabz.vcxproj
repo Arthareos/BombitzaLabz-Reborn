@@ -140,7 +140,6 @@
     <ClCompile Include="classes\Controller.cpp" />
     <ClCompile Include="classes\EnemyAnimation.cpp" />
     <ClCompile Include="classes\Explosion.cpp" />
-    <ClCompile Include="classes\ExplosionAnimation.cpp" />
     <ClCompile Include="classes\GamemodeSelector.cpp" />
     <ClCompile Include="classes\GameRound.cpp" />
     <ClCompile Include="classes\GameStart.cpp" />
@@ -159,7 +158,6 @@
     <ClInclude Include="classes\Controller.h" />
     <ClInclude Include="classes\EnemyAnimation.h" />
     <ClInclude Include="classes\Explosion.h" />
-    <ClInclude Include="classes\ExplosionAnimation.h" />
     <ClInclude Include="classes\GamemodeSelector.h" />
     <ClInclude Include="classes\GameRound.h" />
     <ClInclude Include="classes\GameStart.h" />

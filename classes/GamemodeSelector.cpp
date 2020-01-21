@@ -1,6 +1,6 @@
 #include "GamemodeSelector.h"
 
-constexpr auto VERSION = "BombitzaMan (Alpha 30)";;
+constexpr auto VERSION = "BombitzaLabz Reborn (Alpha 1.1)";;
 
 void gamemodeSelector()
 {
@@ -18,6 +18,8 @@ void gamemodeSelector()
 	{
 		std::cout << " +> [ERROR] Window icon NOT loaded;" << std::endl;
 	}
+	window.setIcon(windowIcon.getSize().x, windowIcon.getSize().y, windowIcon.getPixelsPtr());
+	window.setFramerateLimit(60);
 
 	ControlHandler handler;
 	sf::Joystick::update();
@@ -31,9 +33,6 @@ void gamemodeSelector()
 		handler.AddPlayer();
 		std::cout << " +> [INFO] Controller is NOT connected, switching to keyboard input;" << std::endl;
 	}
-
-	window.setIcon(windowIcon.getSize().x, windowIcon.getSize().y, windowIcon.getPixelsPtr());
-	window.setFramerateLimit(60);
 
 	int16_t gameState = 1;
 	uint64_t highscore = 0;

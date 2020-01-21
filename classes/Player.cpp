@@ -18,8 +18,10 @@ Player::Player(sf::Vector2u imageCount, uint16_t highscore)
 	m_animationSwitchTime = 0.1f;
 	PlayerAnimation animation(&m_texture, imageCount, m_animationSwitchTime);
 	m_animation = animation;
-	m_size = sf::Vector2f(70, 70);
+	m_size = sf::Vector2f(60, 60);
 	m_sprite.setSize(m_size);
+	m_collisionDetector.setSize(sf::Vector2f(40, 40));
+	m_collisionDetector.setFillColor(sf::Color::Transparent);
 
 	this->m_speed = 100.0f;
 
@@ -38,6 +40,7 @@ Player::~Player() {}
 void Player::SetPosition(Map& map, uint16_t position)
 {
 	sf::Vector2f aux;
+
 	switch (position) {
 	case 0:
 		aux = sf::Vector2f(map.GetMapTiles().at(1).at(1).GetSprite()->getPosition().x, map.GetMapTiles().at(1).at(1).GetSprite()->getPosition().y);
@@ -57,6 +60,7 @@ void Player::SetPosition(Map& map, uint16_t position)
 	}
 
 	m_sprite.setPosition(aux.x, aux.y);
+	m_collisionDetector.setPosition(m_sprite.getGlobalBounds().left + 12.f,	m_sprite.getGlobalBounds().top + 20.0f);
 }
 
 void Player::SetStage(uint16_t stage)
@@ -184,6 +188,7 @@ void Player::Movement(float& deltaTime, ControlHandler& handler)
 
 	m_sprite.setTextureRect(m_animation.m_uvRect);
 	m_sprite.move(movement);
+	m_collisionDetector.move(movement);
 }
 
 bool Player::MoveUp(float& deltaTime, ControlHandler& handler, sf::Vector2f& movement)
@@ -234,6 +239,7 @@ bool Player::MoveLeft(float& deltaTime, ControlHandler& handler, sf::Vector2f& m
 
 void Player::DrawPlayer(sf::RenderWindow& window)
 {
+	window.draw(m_collisionDetector);
 	window.draw(m_sprite);
 }
 

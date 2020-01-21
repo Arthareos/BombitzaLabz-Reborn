@@ -14,6 +14,7 @@ protected:
 	sf::Vector2f m_center;
 	sf::Vector2u m_position;
 	sf::RectangleShape m_sprite;
+	sf::RectangleShape m_collisionDetector;
 
 	float m_animationSwitchTime;
 	float m_speed;
