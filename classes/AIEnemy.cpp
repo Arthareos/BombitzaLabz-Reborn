@@ -2,7 +2,7 @@
 #include <time.h>
 #include <string>
 
-AIEnemy::AIEnemy(std::string imageDirectory, sf::Vector2u imageCount, float switchTime, float speed)
+AIEnemy::AIEnemy(std::string imageDirectory, sf::Vector2u m_imageCount, float switchTime, float speed)
 {
 	if (!enemy_texture.loadFromFile(imageDirectory))
 	{
@@ -15,7 +15,7 @@ AIEnemy::AIEnemy(std::string imageDirectory, sf::Vector2u imageCount, float swit
 		m_sprite.setTexture(&enemy_texture);
 	}
 
-	EnemyAnimation animation(&enemy_texture, imageCount, switchTime);
+	EnemyAnimation animation(&enemy_texture, m_imageCount, switchTime);
 	animation1 = animation;
 	this->speed = speed;
 	row = 0;

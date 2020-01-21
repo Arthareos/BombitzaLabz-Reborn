@@ -9,7 +9,7 @@ class Crate {
 private:
 	std::pair <float_t, float_t> coordinates;
 	sf::Sprite sprite;
-	sf::Texture texture;
+	sf::Texture m_texture;
 
 	bool hasExit;
 	bool hasKey;

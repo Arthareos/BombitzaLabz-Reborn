@@ -25,7 +25,8 @@ private:
 	std::vector<AIEnemy> m_enemies;
 	Scoreboard m_scoreboard;
 public:
-	GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t& gameState, Player& player);
+	GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t& gameState,
+		Player& player);
 
 	Map& GetMap();
 	std::vector<AIEnemy>& GetEnemies();

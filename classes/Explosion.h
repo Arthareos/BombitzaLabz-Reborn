@@ -1,32 +1,30 @@
 #pragma once
 #include <SFML\Graphics.hpp>
-
 #include <iostream>
-
 
 #include "Player.h"
 #include "Map.h"
 
-class Explosion{
+class Explosion {
 private:
-	sf::RectangleShape sprExplosion;
-	
-	sf::Texture texture;
-	sf::Vector2u imageCount;
-	sf::Vector2u currentImage;
+	sf::RectangleShape m_sprite;
+	sf::Texture m_texture;
+	sf::Vector2u m_imageCount;
+	sf::Vector2u m_currentImage;
 
-	unsigned int explosionSize;
+	uint16_t m_explosionSize;
 
+	std::vector<sf::RectangleShape> m_explosionsVector;
+	sf::IntRect e_uvRect;
 
 public:
-	sf::IntRect e_uvRect;
-	std::vector<sf::RectangleShape> explVec;
-
 	Explosion();
-	Explosion(std::string imageDirectory, sf::Vector2u imageCount);
+	Explosion(std::string imageDirectory, sf::Vector2u m_imageCount);
+	~Explosion();
 
-	int getExplosionSize();
-	void setExplosionSize(uint16_t size);
+	const uint16_t& GetExplosionSize();
+	std::vector<sf::RectangleShape>& GetExplosionsVector();
 
+	void SetExplosionSize(uint16_t size);
 };
 

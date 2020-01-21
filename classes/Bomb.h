@@ -13,56 +13,43 @@
 
 class Bomb {
 private:
-	sf::RectangleShape sprBomb;
-	sf::Vector2f size;
-	sf::Texture texture;
-	sf::Clock clock;
-	uint16_t bombNumber;
-	std::vector<sf::Vector2u> position;
+	sf::RectangleShape m_sprite;
+	sf::Vector2f m_size;
+	sf::Texture m_texture;
+	sf::Clock m_clock;
+	uint16_t m_bombNumber;
+	std::vector<sf::Vector2u> m_position;
 
-	std::vector<std::pair<sf::RectangleShape, float>> explosionVector;
+	std::vector<std::pair<sf::RectangleShape, float>> m_explosionsVector;
 	
-	float deltaTimeBomb;
+	float m_deltaTimeBomb;
 
-	uint16_t explosionSize;
-	float explosionDeltaTime;
-	uint16_t iterator;
-
-	//animatie
-	sf::IntRect animationRect;
-	sf::Vector2u imageCount;
-	sf::Vector2u currentImage;
-	float switchTime;
-	float animationDeltaTime;
-
+	uint16_t m_explosionSize;
 
 public:
 	std::vector <std::pair<sf::RectangleShape, float>> vecBomb;
 	bool placedBomb;
 
 	Bomb();
-	~Bomb();
 	Bomb(std::string bombTextureDirectory);
+	~Bomb();
 
-	void placeBomb(Map& map, Player& player, ControlHandler& handler);
-	void drawBomb(sf::RenderWindow& window, float deltaTime);
+	void PlaceBomb(Map& map, Player& player, Control& control);
+	void DrawBomb(sf::RenderWindow& window, float deltaTime);
 
-	void explodeCenter(Map& map, Explosion& explosion, int i);
-	void explodeUp(Map& map, Explosion& explosion, int i);
-	void explodeDown(Map& map, Explosion& explosion, int i);
-	void explodeLeft(Map& map, Explosion& explosion, int i);
-	void explodeRight(Map& map, Explosion& explosion, int i);
-	void createExplosion(Map& map, Explosion& explosion, int i);
-	void deleteBomb(Map& map,Explosion& explosion, float deltaTime);
-	void drawExplosion(sf::RenderWindow& window);
-	void deleteExplosion(float deltaTime);
+	void ExplodeCenter(Map& map, Player& player, Explosion& explosion, int i);
+	void ExplodeUp(Map& map, Player& player, Explosion& explosion, int i);
+	void ExplodeDown(Map& map, Player& player, Explosion& explosion, int i);
+	void ExplodeLeft(Map& map, Player& player, Explosion& explosion, int i);
+	void ExplodeRight(Map& map, Player& player, Explosion& explosion, int i);
+	void CreateExplosion(Map& map, Player& player, Explosion& explosion, int i);
+	void DeleteBomb(Map& map, Player& player, Explosion& explosion, float deltaTime);
+	void DrawExplosion(sf::RenderWindow& window);
+	void DeleteExplosion(float deltaTime);
 
-	sf::Vector2u getBombPositionOnMap(int i);
+	const sf::Vector2u& GetPositionOnMap(int i);
 
-	//animation
-	void update(float deltaTime);
-
-	void functionality(float& deltaTime, Map& map, sf::RenderWindow& window,
-		ControlHandler& handler, Explosion& explosion, Player& player);	
+	void Functionality(float& deltaTime, Map& map, sf::RenderWindow& window,
+		Control& control, Explosion& explosion, Player& player);	
 };
 

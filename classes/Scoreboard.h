@@ -23,7 +23,7 @@ protected:
 
 public:
 	Scoreboard();
-	Scoreboard(Map& map, Player& player, int time);
+	Scoreboard(Map& map, Player& player, const uint64_t& highscore, int time);
 
 	void AddScore(uint64_t& score);
 	void SetHighscore();

@@ -4,10 +4,10 @@ Explosion::Explosion() {}
 
 Explosion::Explosion(std::string imageDirectory, sf::Vector2u imageCount)
 {
-	this->imageCount = imageCount;
-	explosionSize = 2;
+	this->m_imageCount = imageCount;
+	m_explosionSize = 1;
 
-	if (!texture.loadFromFile(imageDirectory))
+	if (!m_texture.loadFromFile(imageDirectory))
 	{
 		std::cout << " +> [ERROR] Explosion image not loaded;" << std::endl;
 	}
@@ -16,32 +16,36 @@ Explosion::Explosion(std::string imageDirectory, sf::Vector2u imageCount)
 		std::cout << " +> [INFO] Explosion image loaded;" << std::endl;
 	}
 
-	sprExplosion.setTexture(&texture);
+	m_sprite.setTexture(&m_texture);
 
-	e_uvRect.width = texture.getSize().x / float(imageCount.x);
-	e_uvRect.height = texture.getSize().y / float(imageCount.y);
-	currentImage.x = 0;
+	e_uvRect.width = m_texture.getSize().x / float(imageCount.x);
+	e_uvRect.height = m_texture.getSize().y / float(imageCount.y);
+	m_currentImage.x = 0;
 
-	while (currentImage.x < this->imageCount.x)
+	while (m_currentImage.x < this->m_imageCount.x)
 	{
-		e_uvRect.left = currentImage.x * e_uvRect.width;
-		e_uvRect.top = currentImage.y * e_uvRect.height;
-		sprExplosion.setTextureRect(e_uvRect);
+		e_uvRect.left = m_currentImage.x * e_uvRect.width;
+		e_uvRect.top = m_currentImage.y * e_uvRect.height;
+		m_sprite.setTextureRect(e_uvRect);
 
-
-		explVec.emplace_back(sprExplosion);
-
-
-		currentImage.x++;
+		m_explosionsVector.emplace_back(m_sprite);
+		m_currentImage.x++;
 	}
 }
 
-int Explosion::getExplosionSize()
+Explosion::~Explosion() {}
+
+const uint16_t& Explosion::GetExplosionSize()
 {
-	return explosionSize;
+	return m_explosionSize;
 }
 
-void Explosion::setExplosionSize(uint16_t size)
+std::vector<sf::RectangleShape>& Explosion::GetExplosionsVector()
 {
-	this->explosionSize = size;
+	return m_explosionsVector;
+}
+
+void Explosion::SetExplosionSize(uint16_t size)
+{
+	this->m_explosionSize = size;
 }

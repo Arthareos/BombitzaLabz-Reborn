@@ -2,10 +2,10 @@
 
 Scoreboard::Scoreboard() {}
 
-Scoreboard::Scoreboard(Map& map, Player& player, int time)
+Scoreboard::Scoreboard(Map& map, Player& player, const uint64_t& highscore, int time)
 {
 	this->m_score = player.GetScore();
-	this->m_highscore = player.GetHighscore();
+	this->m_highscore = highscore;
 	this->m_lives = player.GetLives();
 	this->m_clock.restart();
 	this->m_roundLenght = time;

@@ -19,8 +19,27 @@ void getLetterboxView(sf::View& view, sf::RenderWindow& window) {
 	view.setViewport(sf::FloatRect(posX, posY, sizeX, sizeY));
 }
 
-GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t& gameState, Player& player)
+bool isPlayable(Player& player, Scoreboard& scoreboard)
 {
+	bool ok = true;
+
+	if (scoreboard.GetRemainingTime() == 0)
+	{
+		ok = false;
+	}
+	if (player.IsDead())
+	{
+		ok = false;
+	}
+
+	return ok;
+}
+
+GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t& gameState,
+	Player& player)
+{
+	player.SetDead(false);
+
 	Map auxMap(window, 15, 13, Biome::castle);
 	//Map auxMap(window, 30, 26, Biome::castle);
 	m_map = auxMap;
@@ -33,7 +52,7 @@ GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t&
 
 	//aiEnemies.emplace_back(".\\resources\\enemy.png", sf::Vector2u(4, 20), 0.1f, 100.0f);
 
-	Scoreboard auxScoreboard(m_map, player, TIMER);
+	Scoreboard auxScoreboard(m_map, player, player.GetHighscore(), TIMER);
 	m_scoreboard = auxScoreboard;
 
 	player.SetPosition(m_map, 0);
@@ -61,7 +80,7 @@ GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t&
 	getLetterboxView(playerView, window);
 	window.setView(playerView);
 
-	while (gameState % 10 == 2 && m_scoreboard.GetRemainingTime() != 0)
+	while (gameState % 10 == 2 && isPlayable(player, m_scoreboard))
 	{
 		float deltaTime = clock.restart().asSeconds();
 
@@ -104,13 +123,9 @@ GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t&
 			m_enemies.at(index).Update(map, deltaTime, window);
 		}*/
 
-		m_bomb.placeBomb(m_map, player, handler);
-		m_bomb.drawBomb(window, deltaTime);
-		m_bomb.deleteBomb(m_map, m_explosion, deltaTime);
-		m_bomb.drawExplosion(window);
-		m_bomb.deleteExplosion(deltaTime);
-		
+		m_bomb.Functionality(deltaTime, m_map, window, handler.GetPlayer(0), m_explosion, player);		
 		player.Functionality(deltaTime, m_map, window, handler.GetPlayer(0));
+		m_scoreboard.draw(window, deltaTime);
 
 		//Camera control
 		if (!(m_map.GetSize().x * 64 < window.getSize().x && m_map.GetSize().y * 64 < window.getSize().y)) //verific daca mapa este mai mare ca ecranul
@@ -142,14 +157,12 @@ GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t&
 			}
 		}
 
-		m_scoreboard.draw(window, deltaTime);
-
 		//Windows update
 		window.display();
 		window.clear();
 	}
 
-	if (m_scoreboard.GetRemainingTime() < 1)
+	if (isPlayable(player, m_scoreboard) == false)
 	{
 		player.SetLives(player.GetLives() - 1);
 	}

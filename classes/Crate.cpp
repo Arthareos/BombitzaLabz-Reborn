@@ -18,12 +18,12 @@ void Crate::setCoordinates(float_t x, float_t y)
 
 void Crate::setTexture(std::string textureDirectory)
 {
-	if (!texture.loadFromFile(textureDirectory))
+	if (!m_texture.loadFromFile(textureDirectory))
 	{
 		std::cout << " +> [ERROR] Tile texture not loaded;" << std::endl;
 	}
 
-	sprite.setTexture(texture);
+	sprite.setTexture(m_texture);
 	sprite.setScale(1, 1);
 }
 

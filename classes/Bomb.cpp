@@ -2,21 +2,15 @@
 
 Bomb::Bomb() {}
 
-Bomb::~Bomb() {}
-
 Bomb::Bomb(std::string bombTextureDirectory)
 {
-	bombNumber = 2;
-	size = sf::Vector2f(60.f, 60.f);
-	deltaTimeBomb = 0.f;
-	explosionDeltaTime = 0.f;
+	m_bombNumber = 1;
+	m_size = sf::Vector2f(60.f, 60.f);
+	m_deltaTimeBomb = 0.f;
 	placedBomb = false;
-	explosionSize = 2;
-	imageCount = sf::Vector2u(1, 1);
-	currentImage = sf::Vector2u(1, 1);
-	switchTime = 0.1f;
+	m_explosionSize = 1;
 
-	if (!texture.loadFromFile(bombTextureDirectory))
+	if (!m_texture.loadFromFile(bombTextureDirectory))
 	{
 		std::cout << " +> [ERROR] Bomb texture NOT loaded;" << std::endl;
 	}
@@ -25,39 +19,35 @@ Bomb::Bomb(std::string bombTextureDirectory)
 		std::cout << " +> [INFO] Bomb texture loaded;" << std::endl;
 	}
 
-	sprBomb.setTexture(&texture);
-
-	animationRect.width = texture.getSize().x / float(imageCount.x);
-	animationRect.height = texture.getSize().y / float(imageCount.y);
-
+	m_sprite.setTexture(&m_texture);
 }
 
-void Bomb::placeBomb(Map& map, Player& player, ControlHandler& handler)
+Bomb::~Bomb() {}
+
+void Bomb::PlaceBomb(Map& map, Player& player, Control& control)
 {
-	if (sf::Event::JoystickButtonPressed && handler.PressAction(0))
+	if (sf::Event::JoystickButtonPressed && control.PressAction())
 	{
 		if (map.GetMapTiles()[player.GetPositionOnMap(map).x][player.GetPositionOnMap(map).y].GetBomb() == false)
 		{
-			if (vecBomb.size() != bombNumber)
+			if (vecBomb.size() != m_bombNumber)
 			{
 				map.GetMapTiles()[player.GetPositionOnMap(map).x][player.GetPositionOnMap(map).y].SetBomb(true);
 
-				sprBomb.setSize(size);
-				sprBomb.setPosition(map.GetMapTiles()[player.GetPositionOnMap(map).x][player.GetPositionOnMap(map).y].GetSprite().getPosition().x, map.GetMapTiles()[player.GetPositionOnMap(map).x][player.GetPositionOnMap(map).y].GetSprite().getPosition().y);
-				vecBomb.push_back(std::make_pair(sprBomb, deltaTimeBomb));
+				m_sprite.setSize(m_size);
+				m_sprite.setPosition(map.GetMapTiles()[player.GetPositionOnMap(map).x][player.GetPositionOnMap(map).y].GetSprite().getPosition().x, map.GetMapTiles()[player.GetPositionOnMap(map).x][player.GetPositionOnMap(map).y].GetSprite().getPosition().y);
+				vecBomb.push_back(std::make_pair(m_sprite, m_deltaTimeBomb));
 
-				position.push_back(player.GetPositionOnMap(map));
+				m_position.push_back(player.GetPositionOnMap(map));
 			}
 		}
 	}
 }
 
-void Bomb::drawBomb(sf::RenderWindow& window, float deltaTime)
+void Bomb::DrawBomb(sf::RenderWindow& window, float deltaTime)
 {
 	if (!vecBomb.empty())
 	{
-		//update(deltaTime);
-
 		for (auto bomb : vecBomb)
 		{
 			window.draw(bomb.first);
@@ -66,113 +56,93 @@ void Bomb::drawBomb(sf::RenderWindow& window, float deltaTime)
 }
 
 //creating the positions for the 
-void Bomb::explodeCenter(Map& map, Explosion& explosion, int i)
+void Bomb::ExplodeCenter(Map& map, Player& player, Explosion& explosion, int i)
 {
-	explosion.explVec.at(0).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y].GetSprite().getPosition());
-	explosion.explVec.at(0).setSize(sf::Vector2f(80, 80));
+	explosion.GetExplosionsVector().at(0).setPosition(map.GetMapTiles()[GetPositionOnMap(i).x][GetPositionOnMap(i).y].GetSprite().getPosition());
+	explosion.GetExplosionsVector().at(0).setSize(sf::Vector2f(80, 80));
 
-	explosionVector.push_back(std::make_pair(explosion.explVec.at(0),deltaTimeBomb));
+	m_explosionsVector.push_back(std::make_pair(explosion.GetExplosionsVector().at(0), m_deltaTimeBomb));
+
+	if (player.GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x, GetPositionOnMap(i).y))
+	{
+		player.SetDead(true);
+	}
 }
 
-void Bomb::explodeUp(Map& map, Explosion& explosion, int i)
+void Bomb::ExplodeUp(Map& map, Player& player, Explosion& explosion, int i)
 {
 	int k = 1;
-	int size = explosion.getExplosionSize();
+	int size = explosion.GetExplosionSize();
 	bool ok = true;
 
 	while (size > 1)
 	{
-		if (map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y - k].GetType() == 0)
+		if (map.GetMapTiles()[GetPositionOnMap(i).x][GetPositionOnMap(i).y - k].GetType() == 0)
 		{
-			explosion.explVec.at(1).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y - k].GetSprite().getPosition());
-			explosion.explVec.at(1).setSize(sf::Vector2f(80, 80));
-			explosionVector.push_back(std::make_pair(explosion.explVec.at(1), deltaTimeBomb));
+			explosion.GetExplosionsVector().at(1).setPosition(map.GetMapTiles()[GetPositionOnMap(i).x][GetPositionOnMap(i).y - k].GetSprite().getPosition());
+			explosion.GetExplosionsVector().at(1).setSize(sf::Vector2f(80, 80));
+			m_explosionsVector.push_back(std::make_pair(explosion.GetExplosionsVector().at(1), m_deltaTimeBomb));
+
+			if (player.GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x, GetPositionOnMap(i).y - k))
+			{
+				player.SetDead(true);
+			}
 
 			size--;
 			k++;
 		}
 		else
 		{
-			map.DestroyCrate(getBombPositionOnMap(i).x, getBombPositionOnMap(i).y - k);
+			map.DestroyCrate(GetPositionOnMap(i).x, GetPositionOnMap(i).y - k);
 			ok = false;
 			break;
 		}
 	}
 	if (ok)
 	{
-		if (map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y - explosion.getExplosionSize()].GetType() == 0)
+		if (map.GetMapTiles()[GetPositionOnMap(i).x][GetPositionOnMap(i).y - explosion.GetExplosionSize()].GetType() == 0)
 		{
-			explosion.explVec.at(3).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y - explosion.getExplosionSize()].GetSprite().getPosition());
-			explosion.explVec.at(3).setSize(sf::Vector2f(80, 80));
-			explosionVector.push_back(std::make_pair(explosion.explVec.at(3), deltaTimeBomb));
+			explosion.GetExplosionsVector().at(3).setPosition(map.GetMapTiles()[GetPositionOnMap(i).x][GetPositionOnMap(i).y - explosion.GetExplosionSize()].GetSprite().getPosition());
+			explosion.GetExplosionsVector().at(3).setSize(sf::Vector2f(80, 80));
+			m_explosionsVector.push_back(std::make_pair(explosion.GetExplosionsVector().at(3), m_deltaTimeBomb));
+
+			if (player.GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x, GetPositionOnMap(i).y - k))
+			{
+				player.SetDead(true);
+			}
 		}
 		else
 		{
-			map.DestroyCrate(getBombPositionOnMap(i).x, getBombPositionOnMap(i).y - explosion.getExplosionSize());
+			map.DestroyCrate(GetPositionOnMap(i).x, GetPositionOnMap(i).y - explosion.GetExplosionSize());
 		}
 	}
 }
 
-void Bomb::explodeDown(Map& map, Explosion& explosion, int i)
+void Bomb::ExplodeDown(Map& map, Player& player, Explosion& explosion, int i)
 {
 	int k = 1;
-	int size = explosion.getExplosionSize();
+	int size = explosion.GetExplosionSize();
 	bool ok = true;
 
 	while (size > 1)
 	{
-		if (map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y + k].GetType() == 0)
+		if (map.GetMapTiles()[GetPositionOnMap(i).x][GetPositionOnMap(i).y + k].GetType() == 0)
 		{
-			explosion.explVec.at(1).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y + k].GetSprite().getPosition());
-			explosion.explVec.at(1).setSize(sf::Vector2f(80, 80));
-			explosionVector.push_back(std::make_pair(explosion.explVec.at(1), deltaTimeBomb));
+			explosion.GetExplosionsVector().at(1).setPosition(map.GetMapTiles()[GetPositionOnMap(i).x][GetPositionOnMap(i).y + k].GetSprite().getPosition());
+			explosion.GetExplosionsVector().at(1).setSize(sf::Vector2f(80, 80));
+			m_explosionsVector.push_back(std::make_pair(explosion.GetExplosionsVector().at(1), m_deltaTimeBomb));
+
+			if (player.GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x, GetPositionOnMap(i).y + k))
+			{
+				player.SetDead(true);
+			}
 
 			size--;
 			k++;
 		}
 		else
 		{
-			map.DestroyCrate(getBombPositionOnMap(i).x, getBombPositionOnMap(i).y + k);
-			ok = false;
-			break;
-		}
-	}
-
-	if (ok)
-	{
-		if (map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y + explosion.getExplosionSize()].GetType() == 0)
-		{
-			explosion.explVec.at(4).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x][getBombPositionOnMap(i).y + explosion.getExplosionSize()].GetSprite().getPosition());
-			explosion.explVec.at(4).setSize(sf::Vector2f(80, 80));
-			explosionVector.push_back(std::make_pair(explosion.explVec.at(4), deltaTimeBomb));
-		}
-		else
-		{
-			map.DestroyCrate(getBombPositionOnMap(i).x, getBombPositionOnMap(i).y + explosion.getExplosionSize());
-		}
-	}
-}
-
-void Bomb::explodeLeft(Map& map, Explosion& explosion, int i)
-{
-	int k = 1;
-	int size = explosion.getExplosionSize();
-	bool ok = true;
-
-	while (size > 1)
-	{
-		if (map.GetMapTiles()[getBombPositionOnMap(i).x - k][getBombPositionOnMap(i).y].GetType() == 0)
-		{
-			explosion.explVec.at(2).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x - k][getBombPositionOnMap(i).y].GetSprite().getPosition());
-			explosion.explVec.at(2).setSize(sf::Vector2f(80, 80));
-			explosionVector.push_back(std::make_pair(explosion.explVec.at(2), deltaTimeBomb));
-
-			size--;
-			k++;
-		}
-		else
-		{
-			map.DestroyCrate(getBombPositionOnMap(i).x - k, getBombPositionOnMap(i).y);
+			map.DestroyCrate(GetPositionOnMap(i).x, GetPositionOnMap(i).y + k);
 			ok = false;
 			break;
 		}
@@ -180,39 +150,49 @@ void Bomb::explodeLeft(Map& map, Explosion& explosion, int i)
 
 	if (ok)
 	{
-		if (map.GetMapTiles()[getBombPositionOnMap(i).x - explosion.getExplosionSize()][getBombPositionOnMap(i).y].GetType() == 0)
+		if (map.GetMapTiles()[GetPositionOnMap(i).x][GetPositionOnMap(i).y + explosion.GetExplosionSize()].GetType() == 0)
 		{
-			explosion.explVec.at(6).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x - explosion.getExplosionSize()][getBombPositionOnMap(i).y].GetSprite().getPosition());
-			explosion.explVec.at(6).setSize(sf::Vector2f(80, 80));
-			explosionVector.push_back(std::make_pair(explosion.explVec.at(6), deltaTimeBomb));
+			explosion.GetExplosionsVector().at(4).setPosition(map.GetMapTiles()[GetPositionOnMap(i).x][GetPositionOnMap(i).y + explosion.GetExplosionSize()].GetSprite().getPosition());
+			explosion.GetExplosionsVector().at(4).setSize(sf::Vector2f(80, 80));
+			m_explosionsVector.push_back(std::make_pair(explosion.GetExplosionsVector().at(4), m_deltaTimeBomb));
+
+			if (player.GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x, GetPositionOnMap(i).y + k))
+			{
+				player.SetDead(true);
+			}
 		}
 		else
 		{
-			map.DestroyCrate(getBombPositionOnMap(i).x - explosion.getExplosionSize(), getBombPositionOnMap(i).y);
+			map.DestroyCrate(GetPositionOnMap(i).x, GetPositionOnMap(i).y + explosion.GetExplosionSize());
 		}
 	}
 }
 
-void Bomb::explodeRight(Map& map, Explosion& explosion, int i)
+void Bomb::ExplodeLeft(Map& map, Player& player, Explosion& explosion, int i)
 {
 	int k = 1;
-	int size = explosion.getExplosionSize();
+	int size = explosion.GetExplosionSize();
 	bool ok = true;
 
 	while (size > 1)
 	{
-		if (map.GetMapTiles()[getBombPositionOnMap(i).x + k][getBombPositionOnMap(i).y].GetType() == 0)
+		if (map.GetMapTiles()[GetPositionOnMap(i).x - k][GetPositionOnMap(i).y].GetType() == 0)
 		{
-			explosion.explVec.at(2).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x + k][getBombPositionOnMap(i).y].GetSprite().getPosition());
-			explosion.explVec.at(2).setSize(sf::Vector2f(80, 80));
-			explosionVector.push_back(std::make_pair(explosion.explVec.at(2), deltaTimeBomb));
+			explosion.GetExplosionsVector().at(2).setPosition(map.GetMapTiles()[GetPositionOnMap(i).x - k][GetPositionOnMap(i).y].GetSprite().getPosition());
+			explosion.GetExplosionsVector().at(2).setSize(sf::Vector2f(80, 80));
+			m_explosionsVector.push_back(std::make_pair(explosion.GetExplosionsVector().at(2), m_deltaTimeBomb));
+
+			if (player.GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x - k, GetPositionOnMap(i).y))
+			{
+				player.SetDead(true);
+			}
 
 			size--;
 			k++;
 		}
 		else
 		{
-			map.DestroyCrate(getBombPositionOnMap(i).x + k, getBombPositionOnMap(i).y);
+			map.DestroyCrate(GetPositionOnMap(i).x - k, GetPositionOnMap(i).y);
 			ok = false;
 			break;
 		}
@@ -220,101 +200,131 @@ void Bomb::explodeRight(Map& map, Explosion& explosion, int i)
 
 	if (ok)
 	{
-		if (map.GetMapTiles()[getBombPositionOnMap(i).x + explosion.getExplosionSize()][getBombPositionOnMap(i).y].GetType() == 0)
+		if (map.GetMapTiles()[GetPositionOnMap(i).x - explosion.GetExplosionSize()][GetPositionOnMap(i).y].GetType() == 0)
 		{
-			explosion.explVec.at(5).setPosition(map.GetMapTiles()[getBombPositionOnMap(i).x + explosion.getExplosionSize()][getBombPositionOnMap(i).y].GetSprite().getPosition());
-			explosion.explVec.at(5).setSize(sf::Vector2f(80, 80));
-			explosionVector.push_back(std::make_pair(explosion.explVec.at(5), deltaTimeBomb));
+			explosion.GetExplosionsVector().at(6).setPosition(map.GetMapTiles()[GetPositionOnMap(i).x - explosion.GetExplosionSize()][GetPositionOnMap(i).y].GetSprite().getPosition());
+			explosion.GetExplosionsVector().at(6).setSize(sf::Vector2f(80, 80));
+			m_explosionsVector.push_back(std::make_pair(explosion.GetExplosionsVector().at(6), m_deltaTimeBomb));
+
+			if (player.GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x - k, GetPositionOnMap(i).y))
+			{
+				player.SetDead(true);
+			}
 		}
 		else
 		{
-			map.DestroyCrate(getBombPositionOnMap(i).x + explosion.getExplosionSize(), getBombPositionOnMap(i).y);
+			map.DestroyCrate(GetPositionOnMap(i).x - explosion.GetExplosionSize(), GetPositionOnMap(i).y);
 		}
 	}
 }
 
-void Bomb::createExplosion(Map& map, Explosion& explosion, int i)
+void Bomb::ExplodeRight(Map& map, Player& player, Explosion& explosion, int i)
 {
-	explodeCenter(map,explosion, i);
-	explodeDown(map, explosion, i);
-	explodeLeft(map, explosion, i);
-	explodeRight(map, explosion, i);
-	explodeUp(map, explosion, i);
+	int k = 1;
+	int size = explosion.GetExplosionSize();
+	bool ok = true;
+
+	while (size > 1)
+	{
+		if (map.GetMapTiles()[GetPositionOnMap(i).x + k][GetPositionOnMap(i).y].GetType() == 0)
+		{
+			explosion.GetExplosionsVector().at(2).setPosition(map.GetMapTiles()[GetPositionOnMap(i).x + k][GetPositionOnMap(i).y].GetSprite().getPosition());
+			explosion.GetExplosionsVector().at(2).setSize(sf::Vector2f(80, 80));
+			m_explosionsVector.push_back(std::make_pair(explosion.GetExplosionsVector().at(2), m_deltaTimeBomb));
+
+			if (player.GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x + k, GetPositionOnMap(i).y))
+			{
+				player.SetDead(true);
+			}
+
+			size--;
+			k++;
+		}
+		else
+		{
+			map.DestroyCrate(GetPositionOnMap(i).x + k, GetPositionOnMap(i).y);
+			ok = false;
+			break;
+		}
+	}
+
+	if (ok)
+	{
+		if (map.GetMapTiles()[GetPositionOnMap(i).x + explosion.GetExplosionSize()][GetPositionOnMap(i).y].GetType() == 0)
+		{
+			explosion.GetExplosionsVector().at(5).setPosition(map.GetMapTiles()[GetPositionOnMap(i).x + explosion.GetExplosionSize()][GetPositionOnMap(i).y].GetSprite().getPosition());
+			explosion.GetExplosionsVector().at(5).setSize(sf::Vector2f(80, 80));
+			m_explosionsVector.push_back(std::make_pair(explosion.GetExplosionsVector().at(5), m_deltaTimeBomb));
+
+			if (player.GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x + k, GetPositionOnMap(i).y))
+			{
+				player.SetDead(true);
+			}
+		}
+		else
+		{
+			map.DestroyCrate(GetPositionOnMap(i).x + explosion.GetExplosionSize(), GetPositionOnMap(i).y);
+		}
+	}
 }
 
-void Bomb::deleteBomb(Map& map,Explosion& explosion, float deltaTime)
+void Bomb::CreateExplosion(Map& map, Player& player, Explosion& explosion, int i)
+{
+	ExplodeCenter(map, player, explosion, i);
+	ExplodeDown(map, player, explosion, i);
+	ExplodeLeft(map, player, explosion, i);
+	ExplodeRight(map, player, explosion, i);
+	ExplodeUp(map, player, explosion, i);
+}
+
+void Bomb::DeleteBomb(Map& map, Player& player, Explosion& explosion, float deltaTime)
 {
 	if (!vecBomb.empty())
 	{
-		deltaTimeBomb += deltaTime;
+		m_deltaTimeBomb += deltaTime;
 
-		if (deltaTimeBomb > vecBomb.at(0).second + 3)
+		if (m_deltaTimeBomb > vecBomb.at(0).second + 3)
 		{
 			vecBomb.erase(vecBomb.begin());
-			createExplosion(map, explosion, 0);
-			map.GetMapTiles()[getBombPositionOnMap(0).x][getBombPositionOnMap(0).y].SetBomb(false);
-			position.erase(position.begin());
+			CreateExplosion(map, player, explosion, 0);
+			map.GetMapTiles()[GetPositionOnMap(0).x][GetPositionOnMap(0).y].SetBomb(false);
+			m_position.erase(m_position.begin());
 			
 		}
 	}
 }
 
-void Bomb::drawExplosion(sf::RenderWindow& window)
+void Bomb::DrawExplosion(sf::RenderWindow& window)
 {
-	for (auto explozie : explosionVector)
+	for (auto explosion : m_explosionsVector)
 	{
-		window.draw(explozie.first);
+		window.draw(explosion.first);
 	}
 }
 
-void Bomb::deleteExplosion(float deltaTime)
+void Bomb::DeleteExplosion(float deltaTime)
 {
 	
-	if (!explosionVector.empty())
+	if (!m_explosionsVector.empty())
 	{
-		deltaTimeBomb += deltaTime;
-		if (deltaTimeBomb > explosionVector.at(0).second + 1)
+		m_deltaTimeBomb += deltaTime;
+		if (m_deltaTimeBomb > m_explosionsVector.at(0).second + 1)
 		{
-			explosionVector.erase(explosionVector.begin());
+			m_explosionsVector.erase(m_explosionsVector.begin());
 		}
 	}
 }
 
-
-
-
-sf::Vector2u Bomb::getBombPositionOnMap(int i)
+const sf::Vector2u& Bomb::GetPositionOnMap(int i)
 {
-	return position.at(i);
+	return m_position.at(i);
 }
 
-void Bomb::update(float deltaTime)
+void Bomb::Functionality(float& deltaTime, Map& map, sf::RenderWindow& window, Control& control, Explosion& explosion, Player& player)
 {
-	animationDeltaTime += deltaTime;
-	
-	if (animationDeltaTime >= switchTime)
-	{
-		animationDeltaTime -= switchTime;
-		currentImage.x++;
-
-		if (currentImage.x > imageCount.x)
-		{
-			currentImage.x = 1;
-		}
-	}
-
-	animationRect.left = currentImage.x * animationRect.width;
-	animationRect.top = currentImage.y * animationRect.height;
-
-	sprBomb.setSize(size);
-	sprBomb.setTextureRect(animationRect);
-}
-
-void Bomb::functionality(float& deltaTime, Map& map, sf::RenderWindow& window, ControlHandler& handler, Explosion& explosion, Player& player)
-{
-	placeBomb(map, player, handler);
-	drawBomb(window, deltaTime);
-	deleteBomb(map, explosion, deltaTime);
-	drawExplosion(window);
-	deleteExplosion(deltaTime);
+	PlaceBomb(map, player, control);
+	DrawBomb(window, deltaTime);
+	DeleteBomb(map, player, explosion, deltaTime);
+	DrawExplosion(window);
+	DeleteExplosion(deltaTime);
 }

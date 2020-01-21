@@ -11,7 +11,7 @@ private:
 
 public :
 	PlayerAnimation();
-	PlayerAnimation(sf::Texture* texture, sf::Vector2u imageCount, float switchTime);
+	PlayerAnimation(sf::Texture* m_texture, sf::Vector2u m_imageCount, float switchTime);
 	PlayerAnimation& operator=(PlayerAnimation& other);
 
 	sf::IntRect m_uvRect;

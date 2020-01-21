@@ -31,7 +31,7 @@ public:
 
 
 	AIEnemy();
-	AIEnemy(std::string imageDirectory, sf::Vector2u imageCount, float switchTime, float speed);
+	AIEnemy(std::string imageDirectory, sf::Vector2u m_imageCount, float switchTime, float speed);
 	void Update(Map& map, float deltaTime, sf::RenderWindow& window);
 
 	void setPosition(Map& map);

@@ -28,10 +28,11 @@ protected:
 	uint16_t m_lives;
 	uint64_t m_score;
 	uint64_t m_highscore;
+	bool isDead;
 
 public:	
 	Player();
-	Player(sf::Vector2u imageCount, uint16_t highscore);
+	Player(sf::Vector2u m_imageCount, uint16_t highscore);
 	~Player();
 
 	void SetPosition(Map& map, uint16_t position);
@@ -39,7 +40,8 @@ public:
 	void SetRound(uint16_t round);
 	void SetLives(uint16_t lives);
 	void SetScore(uint64_t score);
-	void SetHighscore(uint64_t highscore);
+	void SetHighscore();
+	void SetDead(bool value);
 
 	const sf::RectangleShape& GetSprite();
 	const sf::Vector2f& GetCenterPosition();
@@ -51,6 +53,7 @@ public:
 	const uint16_t& GetLives();
 	const uint64_t& GetScore();
 	const uint64_t& GetHighscore();
+	const bool& IsDead();
 
 	void Movement(float& deltaTime, Control& control, Map& map);
 	bool MoveUp(float& deltaTime, Control& control, sf::Vector2f& movement);

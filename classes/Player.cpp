@@ -3,7 +3,7 @@
 Player::Player() {}
 
 //0 for top-left, 1 for bottom-right, 2 for top-right, 3 for bottom-left
-Player::Player(sf::Vector2u imageCount, uint16_t highscore)
+Player::Player(sf::Vector2u m_imageCount, uint16_t highscore)
 {
 	if (!m_texture.loadFromFile(".\\resources\\bomberman.png"))
 	{
@@ -16,7 +16,7 @@ Player::Player(sf::Vector2u imageCount, uint16_t highscore)
 	}
 
 	m_animationSwitchTime = 0.1f;
-	PlayerAnimation animation(&m_texture, imageCount, m_animationSwitchTime);
+	PlayerAnimation animation(&m_texture, m_imageCount, m_animationSwitchTime);
 	m_animation = animation;
 	m_size = sf::Vector2f(60, 60);
 	m_sprite.setSize(m_size);
@@ -31,6 +31,7 @@ Player::Player(sf::Vector2u imageCount, uint16_t highscore)
 	m_lives = 2;
 	m_score = 0;
 	m_highscore = highscore;
+	isDead = false;
 }
 
 Player::~Player() {}
@@ -83,9 +84,17 @@ void Player::SetScore(uint64_t score)
 	this->m_score = score;
 }
 
-void Player::SetHighscore(uint64_t highscore)
+void Player::SetHighscore()
 {
-	this->m_highscore = highscore;
+	if (m_score > m_highscore)
+	{
+		m_highscore = m_score;
+	}
+}
+
+void Player::SetDead(bool value)
+{
+	this->isDead = value;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -155,6 +164,11 @@ const uint64_t& Player::GetScore()
 const uint64_t& Player::GetHighscore()
 {
 	return m_highscore;
+}
+
+const bool& Player::IsDead()
+{
+	return isDead;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
