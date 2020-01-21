@@ -28,10 +28,11 @@ void Bomb::PlaceBomb(Map& map, Player& player, Control& control)
 {
 	if (sf::Event::JoystickButtonPressed && control.PressAction())
 	{
-		if (map.GetMapTiles()[player.GetPositionOnMap(map).x][player.GetPositionOnMap(map).y].GetBomb() == false)
+		if (map.GetMapTiles()[player.GetPositionOnMap(map).x][player.GetPositionOnMap(map).y].HasBomb() == false)
 		{
 			if (vecBomb.size() != m_bombNumber)
 			{
+				player.ResetImmunity();
 				map.GetMapTiles()[player.GetPositionOnMap(map).x][player.GetPositionOnMap(map).y].SetBomb(true);
 
 				m_sprite.setSize(m_size);
@@ -56,7 +57,7 @@ void Bomb::DrawBomb(sf::RenderWindow& window, float deltaTime)
 }
 
 //creating the positions for the 
-void Bomb::ExplodeCenter(Map& map, Player& player, Explosion& explosion, int i)
+void Bomb::ExplodeCenter(Map& map, Player& player, Explosion& explosion, std::vector<AIEnemy>& enemies, int i)
 {
 	explosion.GetExplosionsVector().at(0).setPosition(map.GetMapTiles()[GetPositionOnMap(i).x][GetPositionOnMap(i).y].GetSprite().getPosition());
 	explosion.GetExplosionsVector().at(0).setSize(sf::Vector2f(80, 80));
@@ -67,9 +68,17 @@ void Bomb::ExplodeCenter(Map& map, Player& player, Explosion& explosion, int i)
 	{
 		player.SetDead(true);
 	}
+	
+	for (int index = 0; index < enemies.size() - 1; index++)
+	{
+		if (enemies.at(index).GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x, GetPositionOnMap(i).y))
+		{
+			enemies.at(index).SetDead(true);
+		}
+	}
 }
 
-void Bomb::ExplodeUp(Map& map, Player& player, Explosion& explosion, int i)
+void Bomb::ExplodeUp(Map& map, Player& player, Explosion& explosion, std::vector<AIEnemy>& enemies, int i)
 {
 	int k = 1;
 	int size = explosion.GetExplosionSize();
@@ -86,6 +95,14 @@ void Bomb::ExplodeUp(Map& map, Player& player, Explosion& explosion, int i)
 			if (player.GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x, GetPositionOnMap(i).y - k))
 			{
 				player.SetDead(true);
+			}
+
+			for (int index = 0; index < enemies.size() - 1; index++)
+			{
+				if (enemies.at(index).GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x, GetPositionOnMap(i).y - k))
+				{
+					enemies.at(index).SetDead(true);
+				}
 			}
 
 			size--;
@@ -110,6 +127,14 @@ void Bomb::ExplodeUp(Map& map, Player& player, Explosion& explosion, int i)
 			{
 				player.SetDead(true);
 			}
+
+			for (int index = 0; index < enemies.size() - 1; index++)
+			{
+				if (enemies.at(index).GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x, GetPositionOnMap(i).y - k))
+				{
+					enemies.at(index).SetDead(true);
+				}
+			}
 		}
 		else
 		{
@@ -118,7 +143,7 @@ void Bomb::ExplodeUp(Map& map, Player& player, Explosion& explosion, int i)
 	}
 }
 
-void Bomb::ExplodeDown(Map& map, Player& player, Explosion& explosion, int i)
+void Bomb::ExplodeDown(Map& map, Player& player, Explosion& explosion, std::vector<AIEnemy>& enemies, int i)
 {
 	int k = 1;
 	int size = explosion.GetExplosionSize();
@@ -135,6 +160,14 @@ void Bomb::ExplodeDown(Map& map, Player& player, Explosion& explosion, int i)
 			if (player.GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x, GetPositionOnMap(i).y + k))
 			{
 				player.SetDead(true);
+			}
+
+			for (int index = 0; index < enemies.size() - 1; index++)
+			{
+				if (enemies.at(index).GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x, GetPositionOnMap(i).y + k))
+				{
+					enemies.at(index).SetDead(true);
+				}
 			}
 
 			size--;
@@ -160,6 +193,14 @@ void Bomb::ExplodeDown(Map& map, Player& player, Explosion& explosion, int i)
 			{
 				player.SetDead(true);
 			}
+
+			for (int index = 0; index < enemies.size() - 1; index++)
+			{
+				if (enemies.at(index).GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x, GetPositionOnMap(i).y + k))
+				{
+					enemies.at(index).SetDead(true);
+				}
+			}
 		}
 		else
 		{
@@ -168,7 +209,7 @@ void Bomb::ExplodeDown(Map& map, Player& player, Explosion& explosion, int i)
 	}
 }
 
-void Bomb::ExplodeLeft(Map& map, Player& player, Explosion& explosion, int i)
+void Bomb::ExplodeLeft(Map& map, Player& player, Explosion& explosion, std::vector<AIEnemy>& enemies, int i)
 {
 	int k = 1;
 	int size = explosion.GetExplosionSize();
@@ -185,6 +226,14 @@ void Bomb::ExplodeLeft(Map& map, Player& player, Explosion& explosion, int i)
 			if (player.GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x - k, GetPositionOnMap(i).y))
 			{
 				player.SetDead(true);
+			}
+
+			for (int index = 0; index < enemies.size() - 1; index++)
+			{
+				if (enemies.at(index).GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x - k, GetPositionOnMap(i).y))
+				{
+					enemies.at(index).SetDead(true);
+				}
 			}
 
 			size--;
@@ -210,6 +259,14 @@ void Bomb::ExplodeLeft(Map& map, Player& player, Explosion& explosion, int i)
 			{
 				player.SetDead(true);
 			}
+
+			for (int index = 0; index < enemies.size() - 1; index++)
+			{
+				if (enemies.at(index).GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x - k, GetPositionOnMap(i).y))
+				{
+					enemies.at(index).SetDead(true);
+				}
+			}
 		}
 		else
 		{
@@ -218,7 +275,7 @@ void Bomb::ExplodeLeft(Map& map, Player& player, Explosion& explosion, int i)
 	}
 }
 
-void Bomb::ExplodeRight(Map& map, Player& player, Explosion& explosion, int i)
+void Bomb::ExplodeRight(Map& map, Player& player, Explosion& explosion, std::vector<AIEnemy>& enemies, int i)
 {
 	int k = 1;
 	int size = explosion.GetExplosionSize();
@@ -235,6 +292,14 @@ void Bomb::ExplodeRight(Map& map, Player& player, Explosion& explosion, int i)
 			if (player.GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x + k, GetPositionOnMap(i).y))
 			{
 				player.SetDead(true);
+			}
+
+			for (int index = 0; index < enemies.size() - 1; index++)
+			{
+				if (enemies.at(index).GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x + k, GetPositionOnMap(i).y))
+				{
+					enemies.at(index).SetDead(true);
+				}
 			}
 
 			size--;
@@ -260,6 +325,14 @@ void Bomb::ExplodeRight(Map& map, Player& player, Explosion& explosion, int i)
 			{
 				player.SetDead(true);
 			}
+
+			for (int index = 0; index < enemies.size() - 1; index++)
+			{
+				if (enemies.at(index).GetPositionOnMap(map) == sf::Vector2u(GetPositionOnMap(i).x + k, GetPositionOnMap(i).y))
+				{
+					enemies.at(index).SetDead(true);
+				}
+			}
 		}
 		else
 		{
@@ -268,16 +341,16 @@ void Bomb::ExplodeRight(Map& map, Player& player, Explosion& explosion, int i)
 	}
 }
 
-void Bomb::CreateExplosion(Map& map, Player& player, Explosion& explosion, int i)
+void Bomb::CreateExplosion(Map& map, Player& player, Explosion& explosion, std::vector<AIEnemy>& enemies, int i)
 {
-	ExplodeCenter(map, player, explosion, i);
-	ExplodeDown(map, player, explosion, i);
-	ExplodeLeft(map, player, explosion, i);
-	ExplodeRight(map, player, explosion, i);
-	ExplodeUp(map, player, explosion, i);
+	ExplodeCenter(map, player, explosion, enemies, i);
+	ExplodeDown(map, player, explosion, enemies, i);
+	ExplodeLeft(map, player, explosion, enemies, i);
+	ExplodeRight(map, player, explosion, enemies, i);
+	ExplodeUp(map, player, explosion, enemies, i);
 }
 
-void Bomb::DeleteBomb(Map& map, Player& player, Explosion& explosion, float deltaTime)
+void Bomb::DeleteBomb(Map& map, Player& player, Explosion& explosion, std::vector<AIEnemy>& enemies, float deltaTime)
 {
 	if (!vecBomb.empty())
 	{
@@ -286,10 +359,9 @@ void Bomb::DeleteBomb(Map& map, Player& player, Explosion& explosion, float delt
 		if (m_deltaTimeBomb > vecBomb.at(0).second + 3)
 		{
 			vecBomb.erase(vecBomb.begin());
-			CreateExplosion(map, player, explosion, 0);
+			CreateExplosion(map, player, explosion, enemies, 0);
 			map.GetMapTiles()[GetPositionOnMap(0).x][GetPositionOnMap(0).y].SetBomb(false);
 			m_position.erase(m_position.begin());
-			
 		}
 	}
 }
@@ -304,7 +376,6 @@ void Bomb::DrawExplosion(sf::RenderWindow& window)
 
 void Bomb::DeleteExplosion(float deltaTime)
 {
-	
 	if (!m_explosionsVector.empty())
 	{
 		m_deltaTimeBomb += deltaTime;
@@ -320,11 +391,11 @@ const sf::Vector2u& Bomb::GetPositionOnMap(int i)
 	return m_position.at(i);
 }
 
-void Bomb::Functionality(float& deltaTime, Map& map, sf::RenderWindow& window, Control& control, Explosion& explosion, Player& player)
+void Bomb::Functionality(float& deltaTime, Map& map, sf::RenderWindow& window, Control& control, Explosion& explosion, Player& player, std::vector<AIEnemy>& enemies)
 {
 	PlaceBomb(map, player, control);
 	DrawBomb(window, deltaTime);
-	DeleteBomb(map, player, explosion, deltaTime);
+	DeleteBomb(map, player, explosion, enemies, deltaTime);
 	DrawExplosion(window);
 	DeleteExplosion(deltaTime);
 }

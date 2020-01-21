@@ -68,22 +68,22 @@ sf::Sprite& MapTile::GetSprite()
 	return this->m_sprite;
 }
 
-float_t MapTile::GetSize()
+const float_t& MapTile::GetSize()
 {
 	return this->m_size;
 }
 
-int16_t MapTile::GetType()
+const int16_t& MapTile::GetType()
 {
 	return this->m_type;
 }
 
-bool MapTile::GetBomb()
+const bool& MapTile::HasBomb()
 {
 	return this->m_hasBomb;
 }
 
-bool MapTile::GetCrate()
+const bool& MapTile::HasCrate()
 {
 	return this->m_hasCrate;
 }

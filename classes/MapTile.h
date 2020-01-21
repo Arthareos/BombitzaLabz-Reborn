@@ -34,10 +34,10 @@ public:
 	std::pair<float_t, float_t>& GetCoordinates();
 	std::pair<uint16_t, uint16_t>& GetIndex();
 	sf::Sprite& GetSprite();
-	float_t GetSize();
-	int16_t GetType();
-	bool GetBomb();
-	bool GetCrate();
+	const float_t& GetSize();
+	const int16_t& GetType();
+	const bool& HasBomb();
+	const bool& HasCrate();
 
 	void Draw(sf::RenderWindow& window);
 };

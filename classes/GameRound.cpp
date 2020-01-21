@@ -24,7 +24,7 @@ void RandomPosition(std::vector<AIEnemy>& enemies, Map& map)
 
 	int index = enemies.size() - 1;
 	int auxHeight, auxWidth;
-	while (index)
+	while (index > -1)
 	{
 		auxHeight = rand() % (int)map.GetSize().x;
 		auxWidth = rand() % (int)map.GetSize().y;
@@ -162,10 +162,13 @@ GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t&
 
 		for (int index = 0; index < m_enemies.size(); index++)
 		{
-			m_enemies.at(index).Functionality(deltaTime, m_map, window);
+			if (m_enemies.at(index).IsDead() == false)
+			{
+				m_enemies.at(index).Functionality(deltaTime, m_map, window);
+			}
 		}
 
-		m_bomb.Functionality(deltaTime, m_map, window, handler.GetPlayer(0), m_explosion, player);		
+		m_bomb.Functionality(deltaTime, m_map, window, handler.GetPlayer(0), m_explosion, player, m_enemies);		
 		player.Functionality(deltaTime, m_map, window, handler.GetPlayer(0));
 		m_scoreboard.draw(window, deltaTime);
 

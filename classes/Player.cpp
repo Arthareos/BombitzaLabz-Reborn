@@ -38,6 +38,11 @@ Player::~Player() {}
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+void Player::ResetImmunity()
+{
+	m_bombCollisionImmunity = 0;
+}
+
 void Player::SetPosition(Map& map, uint16_t position)
 {
 	sf::Vector2f aux;
@@ -196,10 +201,9 @@ void Player::Movement(float& deltaTime, Control& control, Map& map)
 	{
 		for (int indexY = 0; indexY < map.GetMapTiles().at(indexX).size(); indexY++)
 		{
-			if (map.GetMapTiles().at(indexX).at(indexY).GetType() != 0)
+			if (map.GetMapTiles().at(indexX).at(indexY).GetType() != 0 || (map.GetMapTiles().at(indexX).at(indexY).HasBomb() == true && m_bombCollisionImmunity > 2))
 			{
 				sf::FloatRect playerBounds = m_collisionDetector.getGlobalBounds();
-
 				sf::FloatRect obstacleBounds = map.GetMapTiles().at(indexX).at(indexY).GetSprite().getGlobalBounds();
 
 				m_nextPosition = playerBounds;
@@ -318,6 +322,7 @@ void Player::Draw(sf::RenderWindow& window)
 
 void Player::Functionality(float& deltaTime, Map& map, sf::RenderWindow& window, Control& control)
 {
+	m_bombCollisionImmunity += deltaTime;
 	Movement(deltaTime, control, map);
 	Draw(window);
 }

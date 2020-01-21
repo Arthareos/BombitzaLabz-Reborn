@@ -37,7 +37,7 @@ public:
 	void SetPosition(sf::Vector2f position, Map& map);
 	void SetDead(bool value);
 
-	const sf::RectangleShape& GetSprite();
+	sf::RectangleShape& GetSprite();
 	const sf::Vector2f& GetCenterPosition();
 	const sf::Vector2u& GetPositionOnMap(Map& map);
 	const float& GetDistance(float x, float y);

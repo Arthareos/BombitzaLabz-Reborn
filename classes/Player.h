@@ -15,6 +15,7 @@ protected:
 	sf::Vector2u m_position;
 	sf::RectangleShape m_sprite;
 	sf::RectangleShape m_collisionDetector;
+	float m_bombCollisionImmunity;
 	sf::FloatRect m_nextPosition;
 
 	float m_animationSwitchTime;
@@ -35,6 +36,7 @@ public:
 	Player(sf::Vector2u imageCount, uint16_t highscore);
 	~Player();
 
+	void ResetImmunity();
 	void SetPosition(Map& map, uint16_t position);
 	void SetStage(uint16_t stage);
 	void SetRound(uint16_t round);

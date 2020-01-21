@@ -153,7 +153,7 @@ uint16_t Map::GetCrates()
 	{
 		for (uint16_t indexY = 0; indexY < m_width - 1; indexY++)
 		{
-			if (m_tiles.at(indexX).at(indexY).GetCrate() == true)
+			if (m_tiles.at(indexX).at(indexY).HasCrate() == true)
 			{
 				aux++;
 			}
@@ -165,7 +165,7 @@ uint16_t Map::GetCrates()
 
 void Map::DestroyCrate(uint16_t indexX, uint16_t indexY)
 {
-	if (m_tiles.at(indexX).at(indexY).GetCrate() == true || m_tiles.at(indexX).at(indexY).GetType() == 1)
+	if (m_tiles.at(indexX).at(indexY).HasCrate() == true || m_tiles.at(indexX).at(indexY).GetType() == 1)
 	{
 		m_tiles.at(indexX).at(indexY).SetCrate(false);
 		m_tiles.at(indexX).at(indexY).SetType(0);

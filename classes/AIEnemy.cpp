@@ -42,6 +42,11 @@ void AIEnemy::SetPosition(sf::Vector2f position, Map& map)
 	m_collisionDetector.setPosition(m_sprite.getGlobalBounds().left + 12.f, m_sprite.getGlobalBounds().top + 20.0f);
 }
 
+void AIEnemy::SetDead(bool value)
+{
+	m_isDead = value;
+}
+
 const sf::Vector2u& AIEnemy::GetPositionOnMap(Map& map)
 {
 	float min = m_size.x * m_size.y;
@@ -171,6 +176,11 @@ void AIEnemy::Draw(sf::RenderWindow& window)
 	window.draw(m_sprite);
 }
 
+sf::RectangleShape& AIEnemy::GetSprite()
+{
+	return m_sprite;
+}
+
 const sf::Vector2f& AIEnemy::GetCenterPosition()
 {
 	return sf::Vector2f(m_sprite.getPosition().x + m_size.x / 2, m_sprite.getPosition().y + m_size.y / 2);
@@ -179,4 +189,14 @@ const sf::Vector2f& AIEnemy::GetCenterPosition()
 const float& AIEnemy::GetDistance(float x, float y)
 {
 	return sqrt(pow((x - GetCenterPosition().x), 2) + pow((y - GetCenterPosition().y), 2));
+}
+
+const sf::Vector2f& AIEnemy::getSize()
+{
+	return m_size;
+}
+
+const bool& AIEnemy::IsDead()
+{
+	return m_isDead;
 }
