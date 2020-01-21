@@ -14,7 +14,7 @@ AIEnemy::AIEnemy(sf::Vector2u imageCount)
 		m_sprite.setTexture(&m_texture);
 	}
 
-	EnemyAnimation animation(&m_texture, m_imageCount, switchTime);
+	EnemyAnimation animation(&m_texture, imageCount, m_animationSwitchTime);
 	m_animation = animation;
 	m_size = sf::Vector2f(60, 60);
 	m_sprite.setSize(m_size);
@@ -93,80 +93,86 @@ const bool& AIEnemy::IsDead()
 void AIEnemy::Movement(float& deltaTime, Map& map)
 {
 	sf::Vector2f movement(0.0f, 0.0f);
-	bool ok = false;
-
-	while (ok == false)
+	if (m_direction == 1)
 	{
-		auxHeight = rand() % height;
-		auxWidth = rand() % width;
+		movement.y -= m_speed * deltaTime;
+		m_animation.m_auxCurrentImage.y = 9;
+	}
+	else if (m_direction == 2)
+	{
+		movement.y += m_speed * deltaTime;
+		m_animation.m_auxCurrentImage.y = 3;
+	}
+	else if (m_direction == 3)
+	{
+		movement.x -= m_speed * deltaTime;
+		m_animation.m_auxCurrentImage.y = 6;
+	}
+	else if (m_direction == 4)
+	{
+		movement.x += m_speed * deltaTime;
+		m_animation.m_auxCurrentImage.y = 0;
+	}
 
-		auxHeight = std::clamp(auxHeight, 1, (int)height - 1);
-		auxWidth = std::clamp(auxWidth, 1, (int)width - 1);
+	m_moveCounter++;
+	if (m_moveCounter >= m_movementLength)
+	{
+		m_direction = generateRandom(4);
+		m_moveCounter = 0;
+	}
 
-		if (auxHeight == height || auxWidth == width)
+	//Collision Detection
+	for (int indexX = 0; indexX < map.GetMapTiles().size(); indexX++)
+	{
+		for (int indexY = 0; indexY < map.GetMapTiles().at(indexX).size(); indexY++)
 		{
-			srand(NULL);
-		}
-
-		//Collision Detection
-		for (int indexX = 0; indexX < map.GetMapTiles().size(); indexX++)
-		{
-			for (int indexY = 0; indexY < map.GetMapTiles().at(indexX).size(); indexY++)
+			if (map.GetMapTiles().at(indexX).at(indexY).GetType() != 0)
 			{
-				if (map.GetMapTiles().at(indexX).at(indexY).GetType() != 0)
+				sf::FloatRect playerBounds = m_collisionDetector.getGlobalBounds();
+
+				sf::FloatRect obstacleBounds = map.GetMapTiles().at(indexX).at(indexY).GetSprite().getGlobalBounds();
+
+				m_nextPosition = playerBounds;
+				m_nextPosition.left += movement.x;
+				m_nextPosition.top += movement.y;
+
+				if (obstacleBounds.intersects(m_nextPosition))
 				{
-					sf::FloatRect playerBounds = m_collisionDetector.getGlobalBounds();
-
-					sf::FloatRect obstacleBounds = map.GetMapTiles().at(indexX).at(indexY).GetSprite().getGlobalBounds();
-
-					m_nextPosition = playerBounds;
-					m_nextPosition.left += movement.x;
-					m_nextPosition.top += movement.y;
-
-					if (obstacleBounds.intersects(m_nextPosition))
+					//Bottom collision
+					if (playerBounds.top < obstacleBounds.top
+						&& playerBounds.top + playerBounds.height < obstacleBounds.top + obstacleBounds.height
+						&& playerBounds.left < obstacleBounds.left + obstacleBounds.width
+						&& playerBounds.left + playerBounds.width > obstacleBounds.left)
 					{
-						//Bottom collision
-						if (playerBounds.top < obstacleBounds.top
-							&& playerBounds.top + playerBounds.height < obstacleBounds.top + obstacleBounds.height
+						movement.y = 0.f;
+					}
+					else
+						//Top collision
+						if (playerBounds.top > obstacleBounds.top
+							&& playerBounds.top + playerBounds.height > obstacleBounds.top + obstacleBounds.height
 							&& playerBounds.left < obstacleBounds.left + obstacleBounds.width
 							&& playerBounds.left + playerBounds.width > obstacleBounds.left)
 						{
 							movement.y = 0.f;
 						}
 						else
-							//Top collision
-							if (playerBounds.top > obstacleBounds.top
-								&& playerBounds.top + playerBounds.height > obstacleBounds.top + obstacleBounds.height
-								&& playerBounds.left < obstacleBounds.left + obstacleBounds.width
-								&& playerBounds.left + playerBounds.width > obstacleBounds.left)
+							//Right collision
+							if (playerBounds.left - 20 < obstacleBounds.left
+								&& playerBounds.left + playerBounds.width < obstacleBounds.left + obstacleBounds.width
+								&& playerBounds.top < obstacleBounds.top + obstacleBounds.height
+								&& playerBounds.top + playerBounds.height > obstacleBounds.top)
 							{
-								movement.y = 0.f;
+								movement.x = 0.f;
 							}
 							else
-								//Right collision
-								if (playerBounds.left - 20 < obstacleBounds.left
-									&& playerBounds.left + playerBounds.width < obstacleBounds.left + obstacleBounds.width
+								//Left collision
+								if (playerBounds.left + 20 > obstacleBounds.left
+									&& playerBounds.left + playerBounds.width > obstacleBounds.left + obstacleBounds.width
 									&& playerBounds.top < obstacleBounds.top + obstacleBounds.height
 									&& playerBounds.top + playerBounds.height > obstacleBounds.top)
 								{
 									movement.x = 0.f;
 								}
-								else
-									//Left collision
-									if (playerBounds.left + 20 > obstacleBounds.left
-										&& playerBounds.left + playerBounds.width > obstacleBounds.left + obstacleBounds.width
-										&& playerBounds.top < obstacleBounds.top + obstacleBounds.height
-										&& playerBounds.top + playerBounds.height > obstacleBounds.top)
-									{
-										movement.x = 0.f;
-									}
-									else
-									{
-										ok = true;
-									}
-
-					}
-
 				}
 			}
 		}
@@ -184,30 +190,6 @@ void AIEnemy::Movement(float& deltaTime, Map& map)
 	m_sprite.setTextureRect(m_animation.m_uvRect);
 	m_sprite.move(movement);
 	m_collisionDetector.move(movement);
-}
-
-void AIEnemy::MoveUp(float& deltaTime, sf::Vector2f& movement)
-{
-	movement.y -= m_speed * deltaTime;
-	m_animation.m_auxCurrentImage.y = 9;
-}
-
-void AIEnemy::MoveDown(float& deltaTime, sf::Vector2f& movement)
-{
-	movement.y += m_speed * deltaTime;
-	m_animation.m_auxCurrentImage.y = 0;
-}
-
-void AIEnemy::MoveRight(float& deltaTime, sf::Vector2f& movement)
-{
-	movement.x += m_speed * deltaTime;
-	m_animation.m_auxCurrentImage.y = 3;
-}
-
-void AIEnemy::MoveLeft(float& deltaTime, sf::Vector2f& movement)
-{
-	movement.x -= m_speed * deltaTime;
-	m_animation.m_auxCurrentImage.y = 6;
 }
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

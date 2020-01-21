@@ -153,6 +153,7 @@
     <ClCompile Include="classes\MapTile.cpp" />
     <ClCompile Include="classes\Player.cpp" />
     <ClCompile Include="classes\PlayerAnimation.cpp" />
+    <ClCompile Include="classes\Random.cpp" />
     <ClCompile Include="classes\Resources.cpp" />
     <ClCompile Include="classes\Scoreboard.cpp" />
     <ClCompile Include="Source.cpp" />
@@ -176,6 +177,7 @@
     <ClInclude Include="classes\MapTile.h" />
     <ClInclude Include="classes\Player.h" />
     <ClInclude Include="classes\PlayerAnimation.h" />
+    <ClInclude Include="classes\Random.h" />
     <ClInclude Include="classes\Resources.h" />
     <ClInclude Include="classes\Scoreboard.h" />
   </ItemGroup>

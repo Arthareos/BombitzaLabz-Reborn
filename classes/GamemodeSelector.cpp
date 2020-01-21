@@ -1,6 +1,6 @@
 #include "GamemodeSelector.h"
 
-constexpr auto VERSION = "BombitzaLabz Reborn (Alpha 2.2)";;
+constexpr auto VERSION = "BombitzaLabz Reborn (Alpha 2.3)";;
 
 void gamemodeSelector()
 {

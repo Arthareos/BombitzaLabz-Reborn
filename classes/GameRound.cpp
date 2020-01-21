@@ -49,12 +49,17 @@ GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t&
 	Explosion auxExplosion(".\\resources\\explosionTexture.png", sf::Vector2u(7, 4));
 	m_explosion = auxExplosion;
 
-	//aiEnemies.emplace_back(".\\resources\\enemy.png", sf::Vector2u(4, 20), 0.1f, 100.0f);
-
 	Scoreboard auxScoreboard(m_map, player, player.GetHighscore(), TIMER);
 	m_scoreboard = auxScoreboard;
 
 	player.SetPosition(m_map, 0);
+
+	m_enemies.reserve(10);
+	for (int index = 0; index < 10; index++)
+	{
+		AIEnemy enemy(sf::Vector2u(4, 20));
+		m_enemies.push_back(enemy);
+	}
 	
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -117,10 +122,10 @@ GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t&
 
 		m_map.DrawMap(window);
 
-		/*for (int index = 0; index < aiEnemies.size(); index++)
+		for (int index = 0; index < m_enemies.size(); index++)
 		{
-			m_enemies.at(index).Update(map, deltaTime, window);
-		}*/
+			m_enemies.at(index).Functionality(deltaTime, m_map, window);
+		}
 
 		m_bomb.Functionality(deltaTime, m_map, window, handler.GetPlayer(0), m_explosion, player);		
 		player.Functionality(deltaTime, m_map, window, handler.GetPlayer(0));
