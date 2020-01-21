@@ -2,50 +2,50 @@
 
 EnemyAnimation::EnemyAnimation() {}
 
-EnemyAnimation::EnemyAnimation(sf::Texture* m_texture, sf::Vector2u m_imageCount, float switchTime)
+EnemyAnimation& EnemyAnimation::operator=(EnemyAnimation& other)
 {
-	this->m_imageCount = m_imageCount;
-	this->switchTime = switchTime;
+	m_imageCount = other.m_imageCount;
+	m_switchTime = other.m_switchTime;
 
-	totalTime = 0.0f;
-	m_currentImage.x = 0;
-	m_currentImage.y = axuCurrentImage.y;
-	axuCurrentImage.x = 0;
+	m_totalTime = other.m_totalTime;
+	m_currentImage.x = other.m_currentImage.x;
 
-	uvRect.width = m_texture->getSize().x / float(m_imageCount.x);
-	uvRect.height = m_texture->getSize().y / float(m_imageCount.y);
-}
-
-EnemyAnimation& EnemyAnimation::operator=(EnemyAnimation& animation2)
-{
-	m_imageCount = animation2.m_imageCount;
-	switchTime = animation2.switchTime;
-
-	totalTime = animation2.totalTime;
-	m_currentImage.x = animation2.m_currentImage.x;
-
-	uvRect.width = animation2.uvRect.width;
-	uvRect.height = animation2.uvRect.height;
+	m_uvRect.width = other.m_uvRect.width;
+	m_uvRect.height = other.m_uvRect.height;
 
 	return *this;
 }
 
-void EnemyAnimation::update(int collum, float deltaTime, unsigned int animationNumber, unsigned int currentSprite)
+EnemyAnimation::EnemyAnimation(sf::Texture* texture, sf::Vector2u imageCount, float switchTime)
+{
+	this->m_imageCount = imageCount;
+	this->m_switchTime = switchTime;
+
+	m_totalTime = 0.0f;
+	m_currentImage.x = 0;
+	m_currentImage.y = m_auxCurrentImage.y;
+	m_auxCurrentImage.x = 0;
+
+	m_uvRect.width = texture->getSize().x / float(imageCount.x);
+	m_uvRect.height = texture->getSize().y / float(imageCount.y);
+}
+
+void EnemyAnimation::Update(int collum, float deltaTime, unsigned int animationNumber, unsigned int currentSprite)
 {
 	m_currentImage.x = collum;
-	totalTime += deltaTime;
+	m_totalTime += deltaTime;
 
-	if (totalTime >= switchTime)
+	if (m_totalTime >= m_switchTime)
 	{
-		totalTime -= switchTime;
+		m_totalTime -= m_switchTime;
 		m_currentImage.y++;
 
-		if (m_currentImage.y >= (axuCurrentImage.y + currentSprite))
+		if (m_currentImage.y >= (m_auxCurrentImage.y + currentSprite))
 		{
-			m_currentImage.y = axuCurrentImage.y;
+			m_currentImage.y = m_auxCurrentImage.y;
 		}
 	}
 
-	uvRect.left = m_currentImage.x * uvRect.width;
-	uvRect.top = m_currentImage.y * uvRect.height;
+	m_uvRect.left = m_currentImage.x * m_uvRect.width;
+	m_uvRect.top = m_currentImage.y * m_uvRect.height;
 }

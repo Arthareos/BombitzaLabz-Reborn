@@ -8,6 +8,14 @@
 #include "Map.h"
 #include "EnemyAnimation.h"
 
+enum class Directions {
+	up,
+	down,
+	left,
+	right,
+	pause
+};
+
 class AIEnemy : public EnemyAnimation {
 protected:
 	sf::Texture m_texture;
@@ -38,6 +46,12 @@ public:
 	const float& GetDistance(float x, float y);
 	const sf::Vector2f& getSize();
 	const bool& IsDead();
+
+	void Movement(float& deltaTime, Map& map);
+	void MoveUp(float& deltaTime, sf::Vector2f& movement);
+	void MoveDown(float& deltaTime, sf::Vector2f& movement);
+	void MoveRight(float& deltaTime, sf::Vector2f& movement);
+	void MoveLeft(float& deltaTime, sf::Vector2f& movement);
 
 	void Draw(sf::RenderWindow& window);
 	void Functionality(float& deltaTime, Map& map, sf::RenderWindow& window);

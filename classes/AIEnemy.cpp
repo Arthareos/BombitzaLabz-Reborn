@@ -90,6 +90,128 @@ const bool& AIEnemy::IsDead()
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+void AIEnemy::Movement(float& deltaTime, Map& map)
+{
+	sf::Vector2f movement(0.0f, 0.0f);
+	bool ok = false;
+
+	while (ok == false)
+	{
+		auxHeight = rand() % height;
+		auxWidth = rand() % width;
+
+		auxHeight = std::clamp(auxHeight, 1, (int)height - 1);
+		auxWidth = std::clamp(auxWidth, 1, (int)width - 1);
+
+		if (auxHeight == height || auxWidth == width)
+		{
+			srand(NULL);
+		}
+
+		//Collision Detection
+		for (int indexX = 0; indexX < map.GetMapTiles().size(); indexX++)
+		{
+			for (int indexY = 0; indexY < map.GetMapTiles().at(indexX).size(); indexY++)
+			{
+				if (map.GetMapTiles().at(indexX).at(indexY).GetType() != 0)
+				{
+					sf::FloatRect playerBounds = m_collisionDetector.getGlobalBounds();
+
+					sf::FloatRect obstacleBounds = map.GetMapTiles().at(indexX).at(indexY).GetSprite().getGlobalBounds();
+
+					m_nextPosition = playerBounds;
+					m_nextPosition.left += movement.x;
+					m_nextPosition.top += movement.y;
+
+					if (obstacleBounds.intersects(m_nextPosition))
+					{
+						//Bottom collision
+						if (playerBounds.top < obstacleBounds.top
+							&& playerBounds.top + playerBounds.height < obstacleBounds.top + obstacleBounds.height
+							&& playerBounds.left < obstacleBounds.left + obstacleBounds.width
+							&& playerBounds.left + playerBounds.width > obstacleBounds.left)
+						{
+							movement.y = 0.f;
+						}
+						else
+							//Top collision
+							if (playerBounds.top > obstacleBounds.top
+								&& playerBounds.top + playerBounds.height > obstacleBounds.top + obstacleBounds.height
+								&& playerBounds.left < obstacleBounds.left + obstacleBounds.width
+								&& playerBounds.left + playerBounds.width > obstacleBounds.left)
+							{
+								movement.y = 0.f;
+							}
+							else
+								//Right collision
+								if (playerBounds.left - 20 < obstacleBounds.left
+									&& playerBounds.left + playerBounds.width < obstacleBounds.left + obstacleBounds.width
+									&& playerBounds.top < obstacleBounds.top + obstacleBounds.height
+									&& playerBounds.top + playerBounds.height > obstacleBounds.top)
+								{
+									movement.x = 0.f;
+								}
+								else
+									//Left collision
+									if (playerBounds.left + 20 > obstacleBounds.left
+										&& playerBounds.left + playerBounds.width > obstacleBounds.left + obstacleBounds.width
+										&& playerBounds.top < obstacleBounds.top + obstacleBounds.height
+										&& playerBounds.top + playerBounds.height > obstacleBounds.top)
+									{
+										movement.x = 0.f;
+									}
+									else
+									{
+										ok = true;
+									}
+
+					}
+
+				}
+			}
+		}
+	}
+
+	if (movement.x == 0 && movement.y == 0)
+	{
+		m_animation.Update(0, deltaTime, m_auxCurrentImage.y, 1);
+	}
+	else
+	{
+		m_animation.Update(0, deltaTime, m_auxCurrentImage.y, 3);
+	}
+
+	m_sprite.setTextureRect(m_animation.m_uvRect);
+	m_sprite.move(movement);
+	m_collisionDetector.move(movement);
+}
+
+void AIEnemy::MoveUp(float& deltaTime, sf::Vector2f& movement)
+{
+	movement.y -= m_speed * deltaTime;
+	m_animation.m_auxCurrentImage.y = 9;
+}
+
+void AIEnemy::MoveDown(float& deltaTime, sf::Vector2f& movement)
+{
+	movement.y += m_speed * deltaTime;
+	m_animation.m_auxCurrentImage.y = 0;
+}
+
+void AIEnemy::MoveRight(float& deltaTime, sf::Vector2f& movement)
+{
+	movement.x += m_speed * deltaTime;
+	m_animation.m_auxCurrentImage.y = 3;
+}
+
+void AIEnemy::MoveLeft(float& deltaTime, sf::Vector2f& movement)
+{
+	movement.x -= m_speed * deltaTime;
+	m_animation.m_auxCurrentImage.y = 6;
+}
+
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 void AIEnemy::Draw(sf::RenderWindow& window)
 {
 	window.draw(m_sprite);
@@ -97,5 +219,6 @@ void AIEnemy::Draw(sf::RenderWindow& window)
 
 void AIEnemy::Functionality(float& deltaTime, Map& map, sf::RenderWindow& window)
 {
+	Movement(deltaTime, map);
 	Draw(window);
 }

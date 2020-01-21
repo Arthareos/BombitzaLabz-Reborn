@@ -16,9 +16,9 @@ PlayerAnimation& PlayerAnimation::operator=(PlayerAnimation& other)
 	return *this;
 }
 
-PlayerAnimation::PlayerAnimation(sf::Texture* m_texture, sf::Vector2u m_imageCount, float switchTime)
+PlayerAnimation::PlayerAnimation(sf::Texture* texture, sf::Vector2u imageCount, float switchTime)
 {
-	this->m_imageCount = m_imageCount;
+	this->m_imageCount = imageCount;
 	this->m_switchTime = switchTime;
 
 	m_totalTime = 0.0f;
@@ -26,8 +26,8 @@ PlayerAnimation::PlayerAnimation(sf::Texture* m_texture, sf::Vector2u m_imageCou
 	m_currentImage.y = m_auxCurrentImage.y;
 	m_auxCurrentImage.x = 0;
 
-	m_uvRect.width = m_texture->getSize().x / float(m_imageCount.x);
-	m_uvRect.height = m_texture->getSize().y / float(m_imageCount.y);
+	m_uvRect.width = texture->getSize().x / float(imageCount.x);
+	m_uvRect.height = texture->getSize().y / float(imageCount.y);
 }
 
 void PlayerAnimation::Update(int collum, float deltaTime, unsigned int animationNumber, unsigned int currentSprite)
