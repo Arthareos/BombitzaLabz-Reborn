@@ -11,19 +11,19 @@
 class Control {
 private:
 	unsigned int m_ID;
+	unsigned int m_playerNumber;
 
 public:
-	Control();
-	Control(unsigned int m_ID);
+	Control(unsigned int& ID, unsigned int& playerNumber);
 
 	const unsigned int GetID();
 
-	/*bool goUp();
-	bool goDown();
-	bool goLeft();
-	bool goRight();
-	bool pressAction();
-	bool pressBack();*/
+	bool GoUp();
+	bool GoDown();
+	bool GoLeft();
+	bool GoRight();
+	bool PressAction();
+	bool PressBack();
 };
 
 class ControlHandler {
@@ -34,10 +34,10 @@ private:
 public:
 	ControlHandler();
 
-	void AddPlayer();
-	void AddPlayer(unsigned int m_ID);
-	Control& getPlayer(uint16_t PlayerNumber);
-
+	void AddPlayer(unsigned int m_ID, unsigned int playerNumber);
+	Control& GetPlayer(uint16_t PlayerNumber);
+	;
+	bool PressBack();
 	bool GoUp(uint16_t PlayerNumber);
 	bool GoDown(uint16_t PlayerNumber);
 	bool GoLeft(uint16_t PlayerNumber);

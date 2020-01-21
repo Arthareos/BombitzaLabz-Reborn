@@ -1,6 +1,6 @@
 #include "GamemodeSelector.h"
 
-constexpr auto VERSION = "BombitzaLabz Reborn (Alpha 1.1)";;
+constexpr auto VERSION = "BombitzaLabz Reborn (Alpha 1.4)";;
 
 void gamemodeSelector()
 {
@@ -25,12 +25,12 @@ void gamemodeSelector()
 	sf::Joystick::update();
 	if (sf::Joystick::isConnected(0))
 	{
-		handler.AddPlayer(0);
+		handler.AddPlayer(0, 0);
 		std::cout << " +> [INFO] Controller connected;" << std::endl;
 	}
 	else
 	{
-		handler.AddPlayer();
+		handler.AddPlayer(99, 0);
 		std::cout << " +> [INFO] Controller is NOT connected, switching to keyboard input;" << std::endl;
 	}
 
@@ -48,6 +48,10 @@ void gamemodeSelector()
 			break;
 		case 2:
 			gameStart(gameState, window, handler, highscore);
+			break;
+		case 3:
+			BattleMode(gameState, window, handler);
+			gameState = 1;
 			break;
 		default:
 			std::cout << "  +> [ERROR] \"" << gameState << "\" gameState non-existent;" << std::endl;

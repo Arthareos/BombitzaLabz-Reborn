@@ -52,13 +52,13 @@ public:
 	const uint64_t& GetScore();
 	const uint64_t& GetHighscore();
 
-	void Movement(float& deltaTime, ControlHandler& handler, Map& map);
-	bool MoveUp(float& deltaTime, ControlHandler& handler, sf::Vector2f& movement);
-	bool MoveDown(float& deltaTime, ControlHandler& handler, sf::Vector2f& movement);
-	bool MoveRight(float& deltaTime, ControlHandler& handler, sf::Vector2f& movement);
-	bool MoveLeft(float& deltaTime, ControlHandler& handler, sf::Vector2f& movement);
+	void Movement(float& deltaTime, Control& control, Map& map);
+	bool MoveUp(float& deltaTime, Control& control, sf::Vector2f& movement);
+	bool MoveDown(float& deltaTime, Control& control, sf::Vector2f& movement);
+	bool MoveRight(float& deltaTime, Control& control, sf::Vector2f& movement);
+	bool MoveLeft(float& deltaTime, Control& control, sf::Vector2f& movement);
 
 	void DrawPlayer(sf::RenderWindow& window);
-	void Functionality(float& deltaTime, Map& map, sf::RenderWindow& window, ControlHandler& handler);
+	void Functionality(float& deltaTime, Map& map, sf::RenderWindow& window, Control& control);
 };
 

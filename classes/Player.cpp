@@ -21,7 +21,7 @@ Player::Player(sf::Vector2u imageCount, uint16_t highscore)
 	m_size = sf::Vector2f(60, 60);
 	m_sprite.setSize(m_size);
 	m_collisionDetector.setSize(sf::Vector2f(40, 40));
-	m_collisionDetector.setFillColor(sf::Color::Red);
+	m_collisionDetector.setFillColor(sf::Color::Transparent);
 
 	this->m_speed = 100.0f;
 
@@ -159,17 +159,17 @@ const uint64_t& Player::GetHighscore()
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-void Player::Movement(float& deltaTime, ControlHandler& handler, Map& map)
+void Player::Movement(float& deltaTime, Control& control, Map& map)
 {
 	sf::Vector2f movement(0.0f, 0.0f);
 
-	if (!MoveUp(deltaTime, handler, movement))
+	if (!MoveUp(deltaTime, control, movement))
 	{
-		if (!MoveDown(deltaTime, handler, movement))
+		if (!MoveDown(deltaTime, control, movement))
 		{
-			if (!MoveRight(deltaTime, handler, movement))
+			if (!MoveRight(deltaTime, control, movement))
 			{
-				if (!MoveLeft(deltaTime, handler, movement))
+				if (!MoveLeft(deltaTime, control, movement))
 				{
 
 				}
@@ -177,6 +177,7 @@ void Player::Movement(float& deltaTime, ControlHandler& handler, Map& map)
 		}
 	}
 
+	//Collision Detection
 	for (int indexX = 0; indexX < map.GetMapTiles().size(); indexX++)
 	{
 		for (int indexY = 0; indexY < map.GetMapTiles().at(indexX).size(); indexY++)
@@ -249,9 +250,9 @@ void Player::Movement(float& deltaTime, ControlHandler& handler, Map& map)
 	m_collisionDetector.move(movement);
 }
 
-bool Player::MoveUp(float& deltaTime, ControlHandler& handler, sf::Vector2f& movement)
+bool Player::MoveUp(float& deltaTime, Control& control, sf::Vector2f& movement)
 {
-	if ((((int)sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovY)) > 0 || sf::Keyboard::isKeyPressed(sf::Keyboard::W)) && handler.GoUp(0))
+	if ((((int)sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovY)) > 0 || sf::Keyboard::isKeyPressed(sf::Keyboard::W)) && control.GoUp())
 	{
 		movement.y -= m_speed * deltaTime;
 		m_animation.m_auxCurrentImage.y = 9;
@@ -260,9 +261,9 @@ bool Player::MoveUp(float& deltaTime, ControlHandler& handler, sf::Vector2f& mov
 	return false;
 }
 
-bool Player::MoveDown(float& deltaTime, ControlHandler& handler, sf::Vector2f& movement)
+bool Player::MoveDown(float& deltaTime, Control& control, sf::Vector2f& movement)
 {
-	if ((((int)sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovY)) < 0 || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) && handler.GoDown(0))
+	if ((((int)sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovY)) < 0 || sf::Keyboard::isKeyPressed(sf::Keyboard::S)) && control.GoDown())
 	{
 		movement.y += m_speed * deltaTime;
 		m_animation.m_auxCurrentImage.y = 0;
@@ -271,9 +272,9 @@ bool Player::MoveDown(float& deltaTime, ControlHandler& handler, sf::Vector2f& m
 	return false;
 }
 
-bool Player::MoveRight(float& deltaTime, ControlHandler& handler, sf::Vector2f& movement)
+bool Player::MoveRight(float& deltaTime, Control& control, sf::Vector2f& movement)
 {
-	if ((((int)sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX)) > 0 || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) && handler.GoRight(0))
+	if ((((int)sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX)) > 0 || sf::Keyboard::isKeyPressed(sf::Keyboard::D)) && control.GoRight())
 	{
 		movement.x += m_speed * deltaTime;
 		m_animation.m_auxCurrentImage.y = 3;
@@ -282,9 +283,9 @@ bool Player::MoveRight(float& deltaTime, ControlHandler& handler, sf::Vector2f& 
 	return false;
 }
 
-bool Player::MoveLeft(float& deltaTime, ControlHandler& handler, sf::Vector2f& movement)
+bool Player::MoveLeft(float& deltaTime, Control& control, sf::Vector2f& movement)
 {
-	if ((((int)sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX)) < 0 || sf::Keyboard::isKeyPressed(sf::Keyboard::A)) && handler.GoLeft(0))
+	if ((((int)sf::Joystick::getAxisPosition(0, sf::Joystick::Axis::PovX)) < 0 || sf::Keyboard::isKeyPressed(sf::Keyboard::A)) && control.GoLeft())
 	{
 		movement.x -= m_speed * deltaTime;
 		m_animation.m_auxCurrentImage.y = 6;
@@ -301,8 +302,8 @@ void Player::DrawPlayer(sf::RenderWindow& window)
 	window.draw(m_sprite);
 }
 
-void Player::Functionality(float& deltaTime, Map& map, sf::RenderWindow& window, ControlHandler& handler)
+void Player::Functionality(float& deltaTime, Map& map, sf::RenderWindow& window, Control& control)
 {
-	Movement(deltaTime, handler, map);
+	Movement(deltaTime, control, map);
 	DrawPlayer(window);
 }

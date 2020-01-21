@@ -136,8 +136,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="classes\AIEnemy.cpp" />
+    <ClCompile Include="classes\BattleMode.cpp" />
+    <ClCompile Include="classes\BattlePlayer.cpp" />
+    <ClCompile Include="classes\BattleScoreboard.cpp" />
+    <ClCompile Include="classes\BattleStart.cpp" />
     <ClCompile Include="classes\Bomb.cpp" />
     <ClCompile Include="classes\Controller.cpp" />
+    <ClCompile Include="classes\Crate.cpp" />
     <ClCompile Include="classes\EnemyAnimation.cpp" />
     <ClCompile Include="classes\Explosion.cpp" />
     <ClCompile Include="classes\GamemodeSelector.cpp" />
@@ -154,8 +159,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="classes\AIEnemy.h" />
+    <ClInclude Include="classes\BattleMode.h" />
+    <ClInclude Include="classes\BattlePlayer.h" />
+    <ClInclude Include="classes\BattleScoreboard.h" />
+    <ClInclude Include="classes\BattleStart.h" />
     <ClInclude Include="classes\Bomb.h" />
     <ClInclude Include="classes\Controller.h" />
+    <ClInclude Include="classes\Crate.h" />
     <ClInclude Include="classes\EnemyAnimation.h" />
     <ClInclude Include="classes\Explosion.h" />
     <ClInclude Include="classes\GamemodeSelector.h" />

@@ -11,7 +11,7 @@
 #include "Player.h"
 
 class Scoreboard {
-private:
+protected:
 	sf::RectangleShape m_wrapper;
 	Text m_text;
 

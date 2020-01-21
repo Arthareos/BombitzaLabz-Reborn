@@ -12,5 +12,6 @@
 #include "MainMenu.h"
 #include "GameStart.h"
 #include "Controller.h"
+#include "BattleMode.h"
 
 void gamemodeSelector();
