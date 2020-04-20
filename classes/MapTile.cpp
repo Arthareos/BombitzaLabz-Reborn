@@ -32,63 +32,8 @@ void MapTile::SetTexture(std::string textureDirectory)
 	m_sprite.setScale(m_size, m_size);
 }
 
-void MapTile::SetSize(float_t size)
-{
-	this->m_size = size;
-}
-
 void MapTile::SetType(int16_t type)
 {
 	this->m_type = type;
 	this->m_sprite.setPosition(type / 10, type % 10);
-}
-
-void MapTile::SetBomb(bool value)
-{
-	this->m_hasBomb = value;
-}
-
-void MapTile::SetCrate(bool value)
-{
-	this->m_hasCrate = value;
-}
-
-std::pair<float_t, float_t>& MapTile::GetCoordinates()
-{
-	return this->m_coordinates;
-}
-
-std::pair<uint16_t, uint16_t>& MapTile::GetIndex()
-{
-	return m_index;
-}
-
-sf::Sprite& MapTile::GetSprite()
-{
-	return this->m_sprite;
-}
-
-const float_t& MapTile::GetSize()
-{
-	return this->m_size;
-}
-
-const int16_t& MapTile::GetType()
-{
-	return this->m_type;
-}
-
-const bool& MapTile::HasBomb()
-{
-	return this->m_hasBomb;
-}
-
-const bool& MapTile::HasCrate()
-{
-	return this->m_hasCrate;
-}
-
-void MapTile::Draw(sf::RenderWindow& window)
-{
-	window.draw(m_sprite);
 }

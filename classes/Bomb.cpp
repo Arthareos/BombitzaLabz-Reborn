@@ -1,13 +1,10 @@
 #include "Bomb.h"
 
-Bomb::Bomb() {}
-
 Bomb::Bomb(std::string bombTextureDirectory)
 {
 	m_bombNumber = 1;
 	m_size = sf::Vector2f(60.f, 60.f);
 	m_deltaTimeBomb = 0.f;
-	placedBomb = false;
 	m_explosionSize = 1;
 
 	if (!m_texture.loadFromFile(bombTextureDirectory))
@@ -22,22 +19,20 @@ Bomb::Bomb(std::string bombTextureDirectory)
 	m_sprite.setTexture(&m_texture);
 }
 
-Bomb::~Bomb() {}
-
 void Bomb::PlaceBomb(Map& map, Player& player, Control& control)
 {
 	if (sf::Event::JoystickButtonPressed && control.PressAction())
 	{
 		if (map.GetMapTiles()[player.GetPositionOnMap(map).x][player.GetPositionOnMap(map).y].HasBomb() == false)
 		{
-			if (vecBomb.size() != m_bombNumber)
+			if (m_vectorBombs.size() != m_bombNumber)
 			{
 				player.ResetImmunity();
 				map.GetMapTiles()[player.GetPositionOnMap(map).x][player.GetPositionOnMap(map).y].SetBomb(true);
 
 				m_sprite.setSize(m_size);
 				m_sprite.setPosition(map.GetMapTiles()[player.GetPositionOnMap(map).x][player.GetPositionOnMap(map).y].GetSprite().getPosition().x, map.GetMapTiles()[player.GetPositionOnMap(map).x][player.GetPositionOnMap(map).y].GetSprite().getPosition().y);
-				vecBomb.push_back(std::make_pair(m_sprite, m_deltaTimeBomb));
+				m_vectorBombs.push_back(std::make_pair(m_sprite, m_deltaTimeBomb));
 
 				m_position.push_back(player.GetPositionOnMap(map));
 			}
@@ -47,9 +42,9 @@ void Bomb::PlaceBomb(Map& map, Player& player, Control& control)
 
 void Bomb::DrawBomb(sf::RenderWindow& window, float deltaTime)
 {
-	if (!vecBomb.empty())
+	if (!m_vectorBombs.empty())
 	{
-		for (auto bomb : vecBomb)
+		for (auto bomb : m_vectorBombs)
 		{
 			window.draw(bomb.first);
 		}
@@ -352,13 +347,13 @@ void Bomb::CreateExplosion(Map& map, Player& player, Explosion& explosion, std::
 
 void Bomb::DeleteBomb(Map& map, Player& player, Explosion& explosion, std::vector<AIEnemy>& enemies, float deltaTime)
 {
-	if (!vecBomb.empty())
+	if (!m_vectorBombs.empty())
 	{
 		m_deltaTimeBomb += deltaTime;
 
-		if (m_deltaTimeBomb > vecBomb.at(0).second + 3)
+		if (m_deltaTimeBomb > m_vectorBombs.at(0).second + 3)
 		{
-			vecBomb.erase(vecBomb.begin());
+			m_vectorBombs.erase(m_vectorBombs.begin());
 			CreateExplosion(map, player, explosion, enemies, 0);
 			map.GetMapTiles()[GetPositionOnMap(0).x][GetPositionOnMap(0).y].SetBomb(false);
 			m_position.erase(m_position.begin());
@@ -384,11 +379,6 @@ void Bomb::DeleteExplosion(float deltaTime)
 			m_explosionsVector.erase(m_explosionsVector.begin());
 		}
 	}
-}
-
-const sf::Vector2u& Bomb::GetPositionOnMap(int i)
-{
-	return m_position.at(i);
 }
 
 void Bomb::Functionality(float& deltaTime, Map& map, sf::RenderWindow& window, Control& control, Explosion& explosion, Player& player, std::vector<AIEnemy>& enemies)

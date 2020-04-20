@@ -224,13 +224,3 @@ GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t&
 		player.SetLives(player.GetLives() - 1);
 	}
 }
-
-Map& GameRound::GetMap()
-{
-	return m_map;
-}
-
-std::vector<AIEnemy>& GameRound::GetEnemies()
-{
-	return m_enemies;
-}

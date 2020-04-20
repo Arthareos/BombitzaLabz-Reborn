@@ -1,7 +1,5 @@
 #include "Map.h"
 
-Map::Map() {}
-
 //height and width in tile number
 Map::Map(sf::RenderWindow& window, int16_t width, int16_t height, Biome biome)
 {
@@ -133,20 +131,36 @@ const bool Map::PositionValidator(int width, int height)
 	return true;
 }
 
-std::vector<std::vector<MapTile>>& Map::GetMapTiles()
+//Returns a 3x3 matrix of MapTiles
+std::vector<MapTile> Map::GetAdjacentTiles(sf::Vector2u& center)
 {
-	return m_tiles;
+	int16_t minWidth = center.x - 1;
+	int16_t maxWidth = center.x + 1;
+
+	if (minWidth < 0)
+		minWidth = 0;
+	if (maxWidth > m_width)
+		maxWidth = m_width;
+
+	int16_t minHeight = center.y - 1;
+	int16_t maxHeight = center.y + 1;
+
+	if (minHeight < 0)
+		minHeight = 0;
+	if (maxWidth > m_height)
+		maxWidth = m_height;
+
+	std::vector<MapTile> adjacentArea;
+
+	adjacentArea.push_back(m_tiles.at(center.y + 1).at(center.x)); // bottom tile
+	adjacentArea.push_back(m_tiles.at(center.y - 1).at(center.x)); // top tile
+	adjacentArea.push_back(m_tiles.at(center.y).at(center.x - 1)); // right tile
+	adjacentArea.push_back(m_tiles.at(center.y).at(center.x + 1)); // left tile
+
+	return adjacentArea;
 }
 
-//first is height, second is width
-sf::Vector2f Map::GetSize()
-{
-	return sf::Vector2f(m_width, m_height);
-}
-
-//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
-
-uint16_t Map::GetCrates()
+uint16_t Map::GetNumberOfCrates()
 {
 	uint16_t aux = 0;
 

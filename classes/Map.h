@@ -34,14 +34,19 @@ private:
 	int16_t m_offsetHeight;
 
 public:
-	Map();
+	Map() {};
 	Map(sf::RenderWindow& window, int16_t width, int16_t height, Biome biome);
+	~Map() {};
 	
 	const bool PositionValidator(int width, int height);
-	std::vector<std::vector<MapTile>>& GetMapTiles();
-	sf::Vector2f GetSize();
 
-	uint16_t GetCrates();
+	std::vector<std::vector<MapTile>>& GetMapTiles() { return m_tiles; }
+	std::vector<MapTile> GetAdjacentTiles(sf::Vector2u& center);
+	//first is height, second is width
+	sf::Vector2f GetSize() { return sf::Vector2f(m_width, m_height); }
+	uint16_t GetNumberOfCrates();
+
 	void DestroyCrate(uint16_t indexX, uint16_t indexY);
 	void DrawMap(sf::RenderWindow& window);
+	void SetTiles(const std::vector<std::vector<MapTile>>& tileMap) { m_tiles = tileMap; }
 };

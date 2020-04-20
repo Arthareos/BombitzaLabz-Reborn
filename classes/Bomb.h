@@ -22,18 +22,16 @@ private:
 	std::vector<sf::Vector2u> m_position;
 
 	std::vector<std::pair<sf::RectangleShape, float>> m_explosionsVector;
+	std::vector<std::pair<sf::RectangleShape, float>> m_vectorBombs;
 	
 	float m_deltaTimeBomb;
 
 	uint16_t m_explosionSize;
 
 public:
-	std::vector <std::pair<sf::RectangleShape, float>> vecBomb;
-	bool placedBomb;
-
-	Bomb();
+	Bomb() {};
 	Bomb(std::string bombTextureDirectory);
-	~Bomb();
+	~Bomb() {};
 
 	void PlaceBomb(Map& map, Player& player, Control& control);
 	void DrawBomb(sf::RenderWindow& window, float deltaTime);
@@ -48,7 +46,8 @@ public:
 	void DrawExplosion(sf::RenderWindow& window);
 	void DeleteExplosion(float deltaTime);
 
-	const sf::Vector2u& GetPositionOnMap(int i);
+	const sf::Vector2u& GetPositionOnMap(int i) { return m_position.at(i); };
+	const std::vector<std::pair<sf::RectangleShape, float>>& GetBombs() { return m_vectorBombs; };
 
 	void Functionality(float& deltaTime, Map& map, sf::RenderWindow& window,
 		Control& control, Explosion& explosion, Player& player,

@@ -18,13 +18,13 @@ private:
 	sf::IntRect e_uvRect;
 
 public:
-	Explosion();
+	Explosion() {};
 	Explosion(std::string imageDirectory, sf::Vector2u m_imageCount);
-	~Explosion();
+	~Explosion() {};
 
-	const uint16_t& GetExplosionSize();
-	std::vector<sf::RectangleShape>& GetExplosionsVector();
+	const uint16_t& GetExplosionSize() { return m_explosionSize; };
+	std::vector<sf::RectangleShape>& GetExplosionsVector() { return m_explosionsVector; };
 
-	void SetExplosionSize(uint16_t size);
+	void SetExplosionSize(uint16_t size) { this->m_explosionSize = size; };
 };
 

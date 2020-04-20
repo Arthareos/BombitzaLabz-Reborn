@@ -1,7 +1,5 @@
 #include "Explosion.h"
 
-Explosion::Explosion() {}
-
 Explosion::Explosion(std::string imageDirectory, sf::Vector2u imageCount)
 {
 	this->m_imageCount = imageCount;
@@ -31,21 +29,4 @@ Explosion::Explosion(std::string imageDirectory, sf::Vector2u imageCount)
 		m_explosionsVector.emplace_back(m_sprite);
 		m_currentImage.x++;
 	}
-}
-
-Explosion::~Explosion() {}
-
-const uint16_t& Explosion::GetExplosionSize()
-{
-	return m_explosionSize;
-}
-
-std::vector<sf::RectangleShape>& Explosion::GetExplosionsVector()
-{
-	return m_explosionsVector;
-}
-
-void Explosion::SetExplosionSize(uint16_t size)
-{
-	this->m_explosionSize = size;
 }
