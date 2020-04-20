@@ -18,7 +18,8 @@ const bool PositionValidator(Map& map, int width, int height)
 	return true;
 }
 
-void RandomPosition(std::vector<AIEnemy>& enemies, Map& map)
+template<class type>
+void RandomPosition(std::vector<type>& enemies, Map& map)
 {
 	srand(NULL);
 
@@ -88,8 +89,8 @@ GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t&
 {
 	player.SetDead(false);
 
-	Map auxMap(window, 15, 13, Biome::castle);
-	//Map auxMap(window, 30, 26, Biome::castle);
+	//Map auxMap(window, 15, 13, Biome::castle);
+	Map auxMap(window, 30, 26, Biome::castle);
 	m_map = auxMap;
 
 	Bomb auxBomb(".\\resources\\bombermanBombSprite.png");
@@ -103,12 +104,13 @@ GameRound::GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t&
 
 	player.SetPosition(m_map, 0);
 
-	for (int index = 0; index < 10; index++)
+	//for (int index = 0; index < 10; index++)
+	for (int index = 0; index < 15; index++)
 	{
 		AIEnemy enemy(sf::Vector2u(4, 20));
 		m_enemies.push_back(enemy);
 	}
-	RandomPosition(m_enemies, m_map);
+	RandomPosition<AIEnemy>(m_enemies, m_map);
 	
 	//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

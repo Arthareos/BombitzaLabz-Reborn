@@ -78,7 +78,8 @@ Map::Map(sf::RenderWindow& window, int16_t width, int16_t height, Biome biome)
 		}
 	}
 
-	int16_t numberCrates = 32;
+	int16_t numberCrates = 96;
+	//int16_t numberCrates = 32;
 	int auxHeight, auxWidth;
 	while (numberCrates)
 	{

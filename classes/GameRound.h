@@ -7,7 +7,7 @@
 #include <SFML/Window.hpp>
 
 #include <vector>
-#include <algorithm>
+#include <thread>
 
 #include "Resources.h"
 #include "Map.h"
@@ -28,6 +28,9 @@ private:
 public:
 	GameRound(sf::RenderWindow& window, ControlHandler& handler, int16_t& gameState,
 		Player& player);
+
+	void DrawMap(sf::RenderWindow& window);
+	void DrawEnemies(float& deltaTime, sf::RenderWindow& window);
 
 	Map& GetMap();
 	std::vector<AIEnemy>& GetEnemies();
